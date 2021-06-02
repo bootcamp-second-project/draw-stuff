@@ -11,7 +11,7 @@ const router = require('express').Router();
     returns: {@link User}
  */
 router.get('/:id', async (req, res) => {
-
+    res.status(200).send({ "status": "test" });
 });
 
 /**
@@ -25,7 +25,7 @@ router.get('/:id', async (req, res) => {
     returns: {@link User}
  */
 router.post('/', async (req, res) => {
-
+    res.status(200).send({ "status": "test" });
 });
 
 /**
@@ -38,6 +38,7 @@ router.post('/', async (req, res) => {
     returns: {@link User}
  */
 router.put('/:id', async (req, res) => {
+    res.status(200).send({ "status": "test" });
 
 });
 

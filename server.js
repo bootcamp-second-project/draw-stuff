@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-
+const controllers = require('./controllers/index');
 const sequelize = require('./config/connection');
 
 const PORT = process.env.PORT || 3001;
@@ -28,6 +28,8 @@ app.use(express.urlencoded({ extended: true }));
 // takes all static content and serves as assets
 app.use(express.static(path.join(__dirname, './public')));
 
+app.use(controllers);
+
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => {console.log('sequelize now listening.')});
+  app.listen(PORT, () => { console.log('sequelize now listening.') });
 })
