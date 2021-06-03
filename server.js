@@ -28,6 +28,13 @@ app.use(express.urlencoded({ extended: true }));
 // takes all static content and serves as assets
 app.use(express.static(path.join(__dirname, './public')));
 
+io.sockets.on('connection', (socket) => {
+	console.log('Client connected: ' + socket.id)
+	socket.on('mouse', (data) => socket.broadcast.emit('mouse', data))
+	socket.on('disconnect', () => console.log('Client has disconnected'))
+})
+
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {console.log('sequelize now listening.')});
 })
+
