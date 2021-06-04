@@ -1,12 +1,15 @@
-/* 
 const router = require('express').Router();
-const categoryRoutes = require('./category-routes');
-const productRoutes = require('./product-routes');
-const tagRoutes = require('./tag-routes');
+const gameRoutes = require('./gamecontoller');
+const usersRoutes = require('./accountcontroller');
+const playRoute = require('./play-routes');
 
-router.use('/categories', categoryRoutes);
-router.use('/products', productRoutes);
-router.use('/tags', tagRoutes);
+// route for front end
+router.use('/play', playRoutes);
 
-module.exports = router; 
-*/
+// route to interact with users table in database
+router.use('/api/users', usersRoute);
+
+// route to interact with game table in database
+router.use('/api/game', gameRoute);
+
+module.exports = router;
