@@ -25,8 +25,17 @@ Users.init(
     },
     score: {
       type: DataTypes.INTEGER
+    },
+    session_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    game_id: {
+      references: {
+        model: 'game',
+        key: 'id'
+      }
     }
-
   },
   {
     sequelize,

@@ -6,7 +6,7 @@ Game.hasMany(Users, {
 })
 
 Users.belongsTo(Game, {
-  foreignKey: ['drawing_user', 'player_1', 'player_1', 'player_1', 'player_1']
+  foreignKey: 'game_id'
 })
 
 module.exports = { Users, Game };
