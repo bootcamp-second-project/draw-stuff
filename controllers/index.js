@@ -5,6 +5,7 @@ const playRoute = require('./play-routes');
 
 // route for front end
 router.use('/play', playRoutes);
+
 // route to interact with users table in database
 router.use('/api/users', usersRoute);
 // route to interact with game table in database
