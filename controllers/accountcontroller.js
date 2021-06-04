@@ -32,14 +32,21 @@ router.get('/:id', async (req, res) => {
     returns: {@link User}
  */
 router.post('/', async (req, res) => {
-    const username = req.body.username;
+    const newUsername = req.body.username;
     const avatarId = req.body.avatarId;
 
-    if(username == null || avatarId == null) {
+    // console.log(req.session)
+
+    if(newUsername == null || avatarId == null) {
         res.status(400).send({ "Error": "username and avatarId must both not be null" });
     } else {
-        
-        res.status(200).send({ "status": "test" });
+        const newUser = await Users.create({
+            "username": newUsername,
+            "avatar_id": avatarId,
+            "score": 0,
+            "session_id": 0
+        });
+        res.status(200).send(newUser);
     }
 });
 
