@@ -35,8 +35,6 @@ router.post('/', async (req, res) => {
     const newUsername = req.body.username;
     const avatarId = req.body.avatarId;
 
-    // console.log(req.session)
-
     if(newUsername == null || avatarId == null) {
         res.status(400).send({ "Error": "username and avatarId must both not be null" });
     } else {
@@ -44,26 +42,11 @@ router.post('/', async (req, res) => {
             "username": newUsername,
             "avatar_id": avatarId,
             "score": 0,
-            "session_id": 0
+            "session_id": req.session.id
         });
         res.status(200).send(newUser);
     }
 });
-
-/**
-    A put request to /api/account
-
-    body: {
-        newPassword?: string,
-        newAvatar?: string
-    }
-    returns: {@link User}
- */
-router.put('/:id', async (req, res) => {
-    res.status(200).send({ "status": "test" });
-
-});
-
 
 
 module.exports = router;
