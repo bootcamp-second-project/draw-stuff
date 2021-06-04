@@ -7,7 +7,7 @@ router.get('/:id', async (req, res) => {
     where: { id: req.params.id },
     include: [Users],
   })
-    .then((users) => res.json(categories))
+    .then((users) => res.json(users))
     .catch((err) => res.status(500).json(err))
 });
 

@@ -1,5 +1,5 @@
-const Users = require('/Users');
-const Game = require('/Game');
+const Users = require('./Users');
+const Game = require('./Game');
 
 Game.hasMany(Users, {
   foreignKey: ['drawing_user', 'player_1', 'player_1', 'player_1', 'player_1']
