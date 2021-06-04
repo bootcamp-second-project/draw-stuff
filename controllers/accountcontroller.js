@@ -1,5 +1,5 @@
 const router = require('express').Router();
-
+const { Users } = require('../models');
 // The `/api/account` endpoint
 
 
@@ -11,7 +11,15 @@ const router = require('express').Router();
     returns: {@link User}
  */
 router.get('/:id', async (req, res) => {
-    res.status(200).send({ "status": "test" });
+    const id = req.params.id;
+    // Find user by primary key ID
+    const user = await Users.findByPk(id);
+    // Return user data as JSON
+    if (user != null) {
+        res.status(200).send(JSON.stringify(user));
+    } else {
+        res.status(400).send(`User ID ${id} does not exist`);
+    }
 });
 
 /**
@@ -19,13 +27,20 @@ router.get('/:id', async (req, res) => {
 
     body: {
         username: string,
-        hashedPassword: string,
-        avatarImageBase64?: string
+        avatarId: number,
     }
     returns: {@link User}
  */
 router.post('/', async (req, res) => {
-    res.status(200).send({ "status": "test" });
+    const username = req.body.username;
+    const avatarId = req.body.avatarId;
+
+    if(username == null || avatarId == null) {
+        res.status(400).send({ "Error": "username and avatarId must both not be null" });
+    } else {
+        
+        res.status(200).send({ "status": "test" });
+    }
 });
 
 /**

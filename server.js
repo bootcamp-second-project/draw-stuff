@@ -1,8 +1,10 @@
 const express = require('express');
 const path = require('path');
-const controllers = require('./controllers/index');
-const sequelize = require('./config/connection');
 
+const controllers = require('./controllers/index');
+
+const sequelize = require('./config/connection');
+const routes = require('./controllers/');
 const PORT = process.env.PORT || 3001;
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -28,8 +30,10 @@ app.use(express.urlencoded({ extended: true }));
 // takes all static content and serves as assets
 app.use(express.static(path.join(__dirname, './public')));
 
-app.use(controllers);
+// turn on routing from the controllers index
+app.use(routes);
 
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => { console.log('sequelize now listening.') });
+
+sequelize.sync({ force: true }).then(() => {
+  app.listen(PORT, () => {console.log('sequelize now listening.')});
 })
