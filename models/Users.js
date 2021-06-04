@@ -3,7 +3,7 @@ const sequelize = require('../config/connection');
 const Game = require('./Game');
 
 // create our Users model
-class Users extends Model {}
+class Users extends Model { }
 
 // define table columns and configuration
 Users.init(
@@ -12,13 +12,16 @@ Users.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
-      autoIncrement:true
+      autoIncrement: true
 
     },
     username: {
       type: DataTypes.STRING,
       validate: {
-        len: [4-30]
+        len: {
+          args: [4, 30],
+          msg: "Username must be between 4 and 30 characters"
+        }
       },
     },
     avatar_id: {
