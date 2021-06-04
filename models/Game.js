@@ -3,7 +3,7 @@ const sequelize = require('../config/connection');
 const Users = require('./users');
 
 // create our Users model
-class Game extends Model {}
+class Game extends Model { }
 
 // define table columns and configuration
 Game.init(
@@ -12,7 +12,7 @@ Game.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
-      autoIncrement:true
+      autoIncrement: true
 
     },
     draw_list: {
@@ -32,33 +32,33 @@ Game.init(
       }
     },
     player_1: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
-      },
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
     player_2: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
-      },
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
     player_3: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
-      },
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
     player_4: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
-      },
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
 
   },
   {
