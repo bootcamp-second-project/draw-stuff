@@ -4,12 +4,10 @@ let strokeWidth = 4
 let cv
 
 function setup() {
-	// Creating canvas
-	// cv = createCanvas(windowWidth / 2, windowHeight / 2)
+  // Creating canvas
 	cv = createCanvas(600, 400)
-	centerCanvas()
+  cv.parent('#drawing-board');
 	cv.background(255, 255, 255)
-
 	// Start the socket connection
 	socket = io.connect()
 
@@ -47,19 +45,6 @@ function setup() {
 	})
 }
 
-// function windowResized() {
-// 	centerCanvas()
-// 	cv.resizeCanvas(windowWidth / 2, windowHeight / 2, false)
-// }
-
-
-function centerCanvas() {
-	const x = (windowWidth - width) / 1.1
-	const y = (windowHeight - height) / 2
-	cv.position(x, y)
-}
-
-
 function mouseDragged() {
 	// Draw
 	stroke(color)
@@ -80,7 +65,7 @@ function sendmouse(x, y, pX, pY) {
 		color: color,
 		strokeWidth: strokeWidth,
 	}
-
+  // check user against currently drawing user by session id before broadcasting??
 	socket.emit('mouse', data)
 }
 
