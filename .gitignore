@@ -1,3 +1,5 @@
 node_modules
-package-lock.json
+
 .env
+
+#probably need to delete package lock from ignore because people will be running on slightly different versions 
