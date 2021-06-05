@@ -19,7 +19,7 @@ Game_Users.init(
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'player'
+    modelName: 'game_users'
   }
 );
 
