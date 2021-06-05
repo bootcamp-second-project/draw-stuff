@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const gameRoute = require('./gamecontoller');
+const gameRoute = require('./gamecontroller');
 const usersRoute = require('./accountcontroller');
-const playRoute = require('./play-routes');
+// const playRoute = require('./play-routes');
 
 // route for front end
-router.use('/play', playRoute);
+// router.use('/play', playRoute);
 
 // route to interact with users table in database
 router.use('/api/users', usersRoute);

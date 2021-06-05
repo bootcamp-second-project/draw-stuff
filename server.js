@@ -32,22 +32,34 @@ app.use(express.urlencoded({ extended: true }));
 // takes all static content and serves as assets
 app.use(express.static(path.join(__dirname, './public')));
 
+// play game happens on the socket in a room
+app.get('/play/:id', (req, res) => {
+  console.log(`game and room id: ${req.params.id}`);
+  io.on('connection', (socket) => {
+
+    console.log('Client connected on socket: ' + socket.id)
+    // after client connects, join a room 
+    console.log(`playing in room: ${req.params.id}`);
+    
+    socket.join(`room_${req.params.id}`);
+
+    socket.on('mouse', (data) => {
+      // console.log(data)
+      socket.broadcast.to(`room_${req.params.id}`).emit('draw', data)
+    });
+    
+    socket.on('disconnect', () => console.log('Client has disconnected'))
+  })
+  res.sendFile(path.join(__dirname + '/public/play.html'));
+})
+
 // turn on routing from the controllers index
 app.use(routes);
 
-app.get('/play', (req, res) => {
-  if (!req.session?.id) {
-    res.redirect('/');
-  }
-  res.sendFile(__dirname + '/public/play.html');
-});
-
-io.sockets.on('connection', (socket) => {
-	console.log('Client connected: ' + socket.id)
-	socket.on('mouse', (data) => socket.broadcast.emit('mouse', data))
-	socket.on('disconnect', () => console.log('Client has disconnected'))
-})
-
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ force: true }).then(() => {
   server.listen(PORT, () => {console.log(`server and sequelize listening on ${PORT}`)});
 })
+
+// sequelize.sync({ force: true }).then(() => {
+//   app.listen(PORT, () => {console.log('sequelize now listening.')});
+// })

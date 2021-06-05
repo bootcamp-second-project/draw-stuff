@@ -6,13 +6,15 @@ let cv
 function setup() {
   // Creating canvas
 	cv = createCanvas(600, 400)
+  let originParent = cv.parent();
   cv.parent('#drawing-board');
+  originParent.remove();
 	cv.background(255, 255, 255)
 	// Start the socket connection
 	socket = io.connect()
-
+  
 	// Callback function
-	socket.on('mouse', data => {
+	socket.on('draw', data => {
 		stroke(data.color)
 		strokeWeight(data.strokeWidth)
 		line(data.x, data.y, data.px, data.py)

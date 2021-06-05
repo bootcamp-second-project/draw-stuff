@@ -1,14 +1,38 @@
 const router = require('express').Router();
-const { Game, Users } = require('../models');
+const { Game, Users, Game_Users } = require('../models');
+const path = require('path');
 
-// get information about the connected user per their game
+// room numbers automatically assigned in the db as the id
+// socket room used to broadcast to only clients in the game
 router.get('/:id', async (req, res) => {
-  Game.findOne({ 
+  // req.body should look like this...
+  //   {
+  //      id: 1,
+  //      room_id: ?,
+  //   }
+  // will update the Game with a room id
+  Game.findOne({
     where: { id: req.params.id },
-    include: [Users],
+    include: [{
+        Game_Users,
+        include: [Users]
+    }],
   })
-    .then((users) => res.json(users))
+    .then((game) => {
+      res.json(game);
+      // create a new room on the server 
+      socket.join(`room_${req.params.id}`);
+    })
     .catch((err) => res.status(500).json(err))
 });
+
+router.get('/', (req, res) => {
+  if (!req.session?.id) {
+    res.redirect('/');
+  }
+  res.sendFile(path.join(__dirname + '/../public/play.html'));
+});
+
+
 
 module.exports = router;
