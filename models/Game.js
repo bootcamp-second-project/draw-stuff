@@ -13,7 +13,6 @@ Game.init(
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
-
     },
     draw_list: {
       type: DataTypes.STRING,
@@ -24,42 +23,9 @@ Game.init(
     round_time: {
       type: DataTypes.INTEGER
     },
-    drawing_user: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
-    },
-    player_1: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
-    },
-    player_2: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
-    },
-    player_3: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
-    },
-    player_4: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
-    },
-
+    complete: {
+      type: DataTypes.BOOLEAN,
+    }
   },
   {
     sequelize,

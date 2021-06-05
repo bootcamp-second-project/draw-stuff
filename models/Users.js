@@ -27,13 +27,10 @@ Users.init(
     avatar_id: {
       type: DataTypes.INTEGER
     },
-    score: {
-      type: DataTypes.INTEGER
-    },
     session_id: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
+    }
   },
   {
     sequelize,
