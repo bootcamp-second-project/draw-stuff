@@ -1,12 +1,9 @@
-const Users = require('/Users');
-const Game = require('/Game');
+const Game = require('./Game');
+const Users = require('./Users');
+const Game_Users = require('./Game_Users');
 
-Game.hasMany(Users, {
-  foreignKey: ['drawing_user', 'player_1', 'player_1', 'player_1', 'player_1']
+Game.belongsToMany(Users, {
+  through: Game_Users
 })
 
-Users.belongsTo(Game, {
-  foreignKey: ['drawing_user', 'player_1', 'player_1', 'player_1', 'player_1']
-})
-
-module.exports = { Users, Game };
+module.exports = { Users, Game, Game_Users };
