@@ -15,7 +15,7 @@ Game.init(
       autoIncrement: true
     },
     draw_list: {
-      type: DataTypes.JSON
+      type: DataTypes.JSON,
     },
     rounds: {
       type: DataTypes.INTEGER
