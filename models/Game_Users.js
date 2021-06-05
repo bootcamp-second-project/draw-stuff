@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 const Users = require('./Users');
-const Game = require('./Game')
+const Game = require('./Game');
 
 // create our Users model
 class Game_Users extends Model { }
