@@ -35,4 +35,38 @@ router.post('/', async (req, res, err) => {
   }
 });
 
+
+// update player drawing status with api/player/1/drawing
+router.put('/:id/drawing', async (req, res) => {
+  // 
+  const playerId = req.params.id;
+  const drawing = req.body.drawing;
+
+  if (drawing === null || playerId === null) {
+    res.status(400).send({ "Error":"no nulls for playerId or drawing" });
+  } else {
+    const drawingUpdate = await Game_Users.update(req.body, {
+      where: { userId: playerId }
+    })
+    res.status(200).send(drawingUpdate)
+  }
+})
+
+// update score api/player/1/score
+router.put('/:id/score', async (req, res) => {
+  const playerId = req.params.id;
+  const score = req.body.score
+
+  if (playerId === null || score === null) {
+    res.status(400).send({ "Error":"no nulls for playerId or drawing" });
+  } else {
+    const currentScore = await Game_Users.findOne({ where: { userId: playerId } })
+    const newScore = score + currentScore.dataValues.score;
+    const scoreAdd = await Game_Users.update({ score: newScore }, {
+      where: { userId: playerId }
+    })
+    res.status(200).send(scoreAdd)
+  }
+})
+
 module.exports = router;
