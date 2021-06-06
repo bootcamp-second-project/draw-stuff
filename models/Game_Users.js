@@ -11,6 +11,11 @@ Game_Users.init(
   {
     score: {
       type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    drawing: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
     // keys for game and user are added in the models index
   },
