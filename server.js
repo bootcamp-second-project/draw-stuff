@@ -60,10 +60,7 @@ io.on('connection', (socket) => {
 // turn on routing from the controllers index
 app.use(routes);
 
-sequelize.sync({ force: true }).then(() => {
-  server.listen(PORT, () => {console.log(`server and sequelize listening on ${PORT}`)});
-})
 
-// sequelize.sync({ force: true }).then(() => {
-//   app.listen(PORT, () => {console.log('sequelize now listening.')});
-// })
+sequelize.sync({ force: false }).then(() => {
+  app.listen(PORT, () => {console.log('sequelize now listening.')});
+})

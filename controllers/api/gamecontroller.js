@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Game, Users } = require('../models');
+const { Game, Users, Game_Users } = require('../../models');
 
 /**
     A get request to /api/game/5
@@ -48,6 +48,16 @@ router.post('/', async (req, res) => {
     }
 });
 
-
+// get all players by game
+router.get('/:id/players', async (req, res) => {
+  const players = await Game.findAll({
+    where: { id: req.params.id },
+    include: [{
+      model: Users, 
+      through: [Game_Users]
+    }]
+  });
+  res.status(200).send(JSON.stringify(players));
+})
 
 module.exports = router;
