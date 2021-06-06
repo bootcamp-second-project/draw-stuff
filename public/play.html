@@ -3,24 +3,24 @@
   <head>
     <title>Socket.IO draw</title>
   </head>
-  <body class="h-screen grid place-items-center bg-gradient-to-r from-green-400 to-blue-500">
+  <body class="h-screen grid place-items-center bg-gradient-to-r from-blue-100 via-blue-300 to-blue-500">
     
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/addons/p5.sound.min.js"></script>
     
-    <div id='game-container' class="max-w-min min-w-max min-h-min grid grid-cols-6 bg-blue-300">
+    <div id='game-container' class="max-w-min min-w-max min-h-min grid grid-cols-6 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 rounded-md">
       
-      <div id='draw' class="m-2 p-2 col-span-4 flex flex-col max-w-min border-2 border-black ">
+      <div id='draw' class="m-2 p-2 col-span-4 flex flex-col max-w-min border-2 border-blue-300 rounded-md">
         <p id="draw-phrase" class="flex-grow flex justify-center">drawing</p>
         <object id="drawing-board" class='min-w-min col-span-2 bg-white' width='600' height='400'></object>
       </div>
 
-      <div id="controls" class="m-2 col-span-2 flex flex-col border-2 border-black">
+      <div id="controls" class="m-2 col-span-2 flex flex-col border-2 border-blue-300 border-blue rounded-md">
         <div id="players" class="flex-grow self-center flex flex-col w-full">
           <!-- handlebars will gen separate player divs, hardcode one in for now -->
-          <div class="m-1 player bg-gray-500 flex items-center text-xl">
+          <div class="m-1 player bg-blue-200 flex items-center text-xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-200 rounded-md">
             <div class='avatar m-2 w-16 h-16 bg-white'></div>
             <div class="username flex-grow text-center text-xl">username </div>
             |
@@ -28,22 +28,22 @@
           </div>
         </div>
 
-        <section id='drawing-controls' class='m-2 col-span-2 flex flex-col max-h-min justify-self-start min-w-min border-2 p-2 bg-gray-900 rounded-xl'>
+        <section id='drawing-controls' class='m-2 col-span-2 flex flex-col max-h-min justify-self-start min-w-min border-2 p-2 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 rounded-md border-blue-300'>
           <div class="flex flex-col p-1 mb-2 ring-2 rounded">
             <div class="flex">
-              <input class="call-picker min-w-max px-1 m-2" type="text" name="custom_color" placeholder="FFFFFF" id="pickcolor" />
-              <div id="color-holder" class="color-holder m-2 call-picker place-self-center w-8 h-8 bg-black border-2"></div>
+              <input class="call-picker min-w-max px-1 m-2 focus:outline-none" type="text" name="custom_color" placeholder="FFFFFF" id="pickcolor" />
+              <div id="color-holder" class="color-holder m-2 call-picker place-self-center w-8 h-8 bg-black border-blue-300 border-2"></div>
             </div>
-            <button id="color-btn" class='m-2 bg-gray-200 ring-4 text-sm'>Choose color (# hex)</button>
+            <button id="color-btn" class='m-2 bg-gray-200 ring-4 text-sm focus:outline-none'>Choose color (# hex)</button>
           </div>
           <div class="flex p-1 mt-1 ring-2 rounded">
-            <input class="stroke_width_picker w-8 px-1.5 m-2 place-self-center" type="text" name="stroke_width" placeholder="4" id="stroke-width-picker" />
-            <button id="stroke-btn" class='m-2 px-2 bg-gray-200 ring-4 text-sm'>Change stroke width</button>
+            <input class="stroke_width_picker w-8 px-1.5 m-2 place-self-center focus:outline-none" type="text" name="stroke_width" placeholder="4" id="stroke-width-picker" />
+            <button id="stroke-btn" class='m-2 px-2 bg-gray-200 ring-4 text-sm focus:outline-none'>Change stroke width</button>
           </div>
         </section>
       </div>
 
-      <div id="vote" class="m-2 p-1 col-span-6 border-2 border-black flex-grow flex  bg-purple-400">
+      <div id="vote" class="m-2 p-1 col-span-6 border-2 border-blue-300 flex-grow flex bg-blue-200 rounded-md">
         vote buttons
       </div>
 
