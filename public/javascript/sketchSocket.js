@@ -3,6 +3,9 @@ let color = '#000'
 let strokeWidth = 4
 let cv
 
+
+
+
 function setup() {
   // Creating canvas
 	cv = createCanvas(600, 400)
@@ -12,6 +15,14 @@ function setup() {
 	cv.background(255, 255, 255)
 	// Start the socket connection
 	socket = io.connect()
+
+  // grab the id of the room 
+  let url = window.location.href.split('/');
+  let room = url[url.length - 1];
+  socket.on('connect', () =>  {
+    // server takes join message, adds client to room
+    socket.emit('join', room)
+  })
   
 	// Callback function
 	socket.on('draw', data => {

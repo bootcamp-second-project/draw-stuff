@@ -1,19 +1,6 @@
 const router = require('express').Router();
 const { Game, Users } = require('../models');
 
-<<<<<<< HEAD
-// create game in the database
-// game object should look like this
-  //   {
-  //      id: 1,
-  //      draw_list: ['cat','dog'...],
-  //      rounds: 3,
-  //      round_time: 60,
-  //      complete: false
-  //   }
-
-// after game object gets made and entered into db, 
-=======
 /**
     A get request to /api/game/5
     would return info about user with ID 5
@@ -62,6 +49,5 @@ router.post('/', async (req, res) => {
 });
 
 
->>>>>>> develop
 
 module.exports = router;

@@ -32,25 +32,29 @@ app.use(express.urlencoded({ extended: true }));
 // takes all static content and serves as assets
 app.use(express.static(path.join(__dirname, './public')));
 
-// play game happens on the socket in a room
+io.of("/").adapter.on("join-room", (room, id) => {
+  // console.log(`socket ${id} has joined room ${room}`);
+});
+
+// play game page will render at whatever id
 app.get('/play/:id', (req, res) => {
-  console.log(`game and room id: ${req.params.id}`);
-  io.on('connection', (socket) => {
-
-    console.log('Client connected on socket: ' + socket.id)
-    // after client connects, join a room 
-    console.log(`playing in room: ${req.params.id}`);
-    
-    socket.join(`room_${req.params.id}`);
-
-    socket.on('mouse', (data) => {
-      // console.log(data)
-      socket.broadcast.to(`room_${req.params.id}`).emit('draw', data)
-    });
-    
-    socket.on('disconnect', () => console.log('Client has disconnected'))
-  })
   res.sendFile(path.join(__dirname + '/public/play.html'));
+})
+
+io.on('connection', (socket) => {
+  // console.log('Client connected on socket: ' + socket.id)
+  // after client connects, sends join a room msg :)
+  socket.on('join', (id) => {
+    socket.join(id);
+    console.log('now playing in room: ' + id);
+    // socket gets draw datas to emit to other clients
+    socket.on('mouse', (data) => {
+      socket.to(id).emit('draw', data)
+    });
+  });
+  
+  
+  socket.on('disconnect', () => console.log('Client has disconnected'))
 })
 
 // turn on routing from the controllers index
