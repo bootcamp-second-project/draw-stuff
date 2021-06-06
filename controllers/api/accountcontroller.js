@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Users } = require('../models');
+const { Users } = require('../../models');
 // The `/api/account` endpoint
 
 
@@ -41,7 +41,6 @@ router.post('/', async (req, res) => {
         const newUser = await Users.create({
             "username": newUsername,
             "avatar_id": avatarId,
-            "score": 0,
             "session_id": req.session.id
         });
         res.status(200).send(newUser);
