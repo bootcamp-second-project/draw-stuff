@@ -4,7 +4,7 @@ const usersRoute = require('./accountcontroller');
 const playerRoute = require('./game-users-route');
 
 // route for front end
-router.use('/play', playerRoute);
+router.use('/player', playerRoute);
 
 // route to interact with users table in database
 router.use('/users', usersRoute);

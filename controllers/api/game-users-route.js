@@ -1,21 +1,37 @@
 const router = require('express').Router();
 const { Game, Users, Game_Users } = require('../../models');
+// Game_Users are players, easier to think of that way
 
-// get information about the connected user per their game
-router.post('/', async (req, res) => {
+// get all players
+router.get('/', async (req, res) => {
+  const players = await Game_Users.findAll();
+  res.status(200).send(JSON.stringify(players));
+})
+
+// get one player
+router.get('/:id', async (req, res) => {
+  const player = await Game_Users.findOne({
+    where: { userId: req.params.id }
+  });
+  res.status(200).send(JSON.stringify(player));
+})
+
+// create a game user, aka a player :)
+router.post('/', async (req, res, err) => {
   const gameId = req.body.game_id;
-  const playerId = req.body.player_id;
+  const userId = req.body.user_id;
 
-  if(gameId == null || playerId == null) {
-      res.status(400).send({ "Error": "game_id and player_id must both not be null" });
+  // could have logic to check there is a game with the req ID here
+  // but this validation would be better in the model
+
+  if (gameId == null || userId == null) {
+    res.status(400).send({ "Error":"game_id and user_id must both not be null" });
   } else {
-      const newUser = await Game_Users.create({
-          "game_id": gameId,
-          "player_id": playerId,
-          "score": 0,
-          "drawing": false
-      });
-      res.status(200).send(newUser);
+    const newPlayer = await Game_Users.build({
+      "gameId": gameId,
+      "userId": userId
+    });
+    newPlayer.save() ? res.status(200).send(newPlayer) : console.log(err);
   }
 });
 

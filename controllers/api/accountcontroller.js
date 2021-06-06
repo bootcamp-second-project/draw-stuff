@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Users } = require('../../models');
+const { Game, Users, Game_Users } = require('../../models');
 // The `/api/account` endpoint
 
 
@@ -47,5 +47,13 @@ router.post('/', async (req, res) => {
     }
 });
 
+// get all games by player
+router.get('/:id/played', async (req, res) => {
+  const players = await Users.findAll({
+    where: { id: req.params.id },
+    include: [Game]
+  });
+  res.status(200).send(JSON.stringify(players));
+})
 
 module.exports = router;
