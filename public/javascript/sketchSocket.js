@@ -1,10 +1,27 @@
+const url = window.location.href.split('/');
+const gameRoom = url[url.length - 1];
+
+// fetch for grabbing users and game data
+// fetch from '.../api/game/1/players'
+// list session ids with gamePlayersObj.users[*].session_id
+
+// authorize user to draw according to the session ids of drawing player
+// use this to prevent socket broadcasting by non-drawing users later
+
+// timers to allow each user to draw consecutively
+
+// need fetch to update 
+
+// update all players drawing to false for 5 seconds at end of round
+// set the currently drawing user
+
+// post fetch to update user scores as the game is played
+// will run after scoring players press vote buttons
+
 let socket
 let color = '#000'
 let strokeWidth = 4
 let cv
-
-
-
 
 function setup() {
   // Creating canvas
@@ -16,12 +33,9 @@ function setup() {
 	// Start the socket connection
 	socket = io.connect()
 
-  // grab the id of the room 
-  let url = window.location.href.split('/');
-  let room = url[url.length - 1];
   socket.on('connect', () =>  {
     // server takes join message, adds client to room
-    socket.emit('join', room)
+    socket.emit('join', gameRoom)
   })
   
 	// Callback function
