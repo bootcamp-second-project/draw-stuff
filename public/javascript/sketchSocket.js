@@ -32,7 +32,7 @@ playerData(gameRoom)
 
 // timers to allow each user to draw consecutively
 
-// need fetch to update 
+// need fetch to update the word currently drawing
 
 // update all players drawing to false for 5 seconds at end of round
 // set the currently drawing user
@@ -95,6 +95,7 @@ function mouseDragged() {
 	// Draw
 	stroke(color)
 	strokeWeight(strokeWidth)
+  // check user against currently drawing user by session id before broadcasting??
   if (currentSid === drawingPlayer[0].session) {
 	  line(mouseX, mouseY, pmouseX, pmouseY)
     sendmouse(mouseX, mouseY, pmouseX, pmouseY)
@@ -112,7 +113,6 @@ function sendmouse(x, y, pX, pY) {
 		color: color,
 		strokeWidth: strokeWidth,
 	}
-  // check user against currently drawing user by session id before broadcasting??
-    socket.emit('mouse', data)
+  socket.emit('mouse', data)
 }
 
