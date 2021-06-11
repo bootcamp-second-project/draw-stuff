@@ -1,9 +1,31 @@
-const url = window.location.href.split('/');
-const gameRoom = url[url.length - 1];
+const url = window.location.href.split('/')
+const gameRoom = url[url.length - 1]
+let drawingPlayer
+let scoringPlayers
+let currentSid = sessionStorage.getItem('sid')
 
-// fetch for grabbing users and game data
-// fetch from '.../api/game/1/players'
-// list session ids with gamePlayersObj.users[*].session_id
+// sessionStorage.setItem('sid', `${session_id}`)
+const playerData = async (gameId) => {
+  // fetch for grabbing users and game data
+  const response = await fetch(`/api/game/${gameId}/players`,{
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  }).then(res => res.json())
+  // console.log(response[0].users)
+  players = response[0].users.map((player) => {
+    const data = {
+      session: player.session_id,
+      score: player.game_users.score,
+      drawing: player.game_users.drawing
+    }
+    return data
+  })
+  drawingPlayer = players.filter((player) => player.drawing === true)
+  scoringPlayers = players.filter((player) => player.drawing === true)
+
+  console.log(drawingPlayer)
+}
+playerData(gameRoom)
 
 // authorize user to draw according to the session ids of drawing player
 // use this to prevent socket broadcasting by non-drawing users later
@@ -19,16 +41,16 @@ const gameRoom = url[url.length - 1];
 // will run after scoring players press vote buttons
 
 let socket
-let color = '#000'
+let color = '#111'
 let strokeWidth = 4
 let cv
 
 function setup() {
   // Creating canvas
 	cv = createCanvas(600, 400)
-  let originParent = cv.parent();
-  cv.parent('#drawing-board');
-  originParent.remove();
+  let originParent = cv.parent()
+  cv.parent('#drawing-board')
+  originParent.remove()
 	cv.background(255, 255, 255)
 	// Start the socket connection
 	socket = io.connect()
@@ -73,10 +95,11 @@ function mouseDragged() {
 	// Draw
 	stroke(color)
 	strokeWeight(strokeWidth)
-	line(mouseX, mouseY, pmouseX, pmouseY)
-
+  if (currentSid === drawingPlayer[0].session) {
+	  line(mouseX, mouseY, pmouseX, pmouseY)
+    sendmouse(mouseX, mouseY, pmouseX, pmouseY)
+  }
 	// Send the mouse coordinates
-	sendmouse(mouseX, mouseY, pmouseX, pmouseY)
 }
 
 // Sending data to the socket
@@ -90,6 +113,6 @@ function sendmouse(x, y, pX, pY) {
 		strokeWidth: strokeWidth,
 	}
   // check user against currently drawing user by session id before broadcasting??
-	socket.emit('mouse', data)
+    socket.emit('mouse', data)
 }
 

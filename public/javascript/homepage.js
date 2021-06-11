@@ -3,6 +3,7 @@
 // homepage needs at least 3 fetches...
 
 // fetch function to post a new user to the database
+// sessionStorage.setItem('sid', `${session_id}`);
 
 // fetch function to create a new game in the database
 
