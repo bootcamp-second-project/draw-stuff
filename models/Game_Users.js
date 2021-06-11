@@ -1,39 +1,31 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 const Users = require('./Users');
+const Game = require('./Game');
 
 // create our Users model
-class Game extends Model { }
+class Game_Users extends Model { }
 
 // define table columns and configuration
-Game.init(
+Game_Users.init(
   {
-    id: {
+    score: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      defaultValue: 0
     },
-    draw_list: {
-      type: DataTypes.JSON,
-    },
-    rounds: {
-      type: DataTypes.INTEGER
-    },
-    round_time: {
-      type: DataTypes.INTEGER
-    },
-    complete: {
+    drawing: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
+    // keys for game and user are added in the models index
   },
   {
     sequelize,
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'game'
+    modelName: 'game_users'
   }
 );
 
-module.exports = Game;
+module.exports = Game_Users;
