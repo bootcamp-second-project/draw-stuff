@@ -5,7 +5,7 @@ const { Game, Users, Game_Users } = require('../../models');
 // get all players
 router.get('/', async (req, res) => {
   const players = await Game_Users.findAll();
-  res.status(200).send(JSON.stringify(players));
+  res.status(200).send(players);
 })
 
 // get one player
@@ -13,7 +13,7 @@ router.get('/:id', async (req, res) => {
   const player = await Game_Users.findOne({
     where: { userId: req.params.id }
   });
-  res.status(200).send(JSON.stringify(player));
+  res.status(200).send(player);
 })
 
 // create a game user, aka a player :)

@@ -16,7 +16,7 @@ router.get('/:id', async (req, res) => {
     const user = await Users.findByPk(id);
     // Return user data as JSON
     if (user != null) {
-        res.status(200).send(JSON.stringify(user));
+        res.status(200).send(user);
     } else {
         res.status(400).send(`User ID ${id} does not exist`);
     }
@@ -53,7 +53,7 @@ router.get('/:id/played', async (req, res) => {
     where: { id: req.params.id },
     include: [Game]
   });
-  res.status(200).send(JSON.stringify(players));
+  res.status(200).send(players);
 })
 
 module.exports = router;

@@ -14,7 +14,7 @@ router.get('/:id', async (req, res) => {
     const game = await Game.findByPk(id);
     // Return user data as JSON
     if (game != null) {
-        res.status(200).send(JSON.stringify(game));
+        res.status(200).send(game);
     } else {
         res.status(400).send(`Game ID ${id} does not exist`);
     }
@@ -57,7 +57,7 @@ router.get('/:id/players', async (req, res) => {
       through: [Game_Users]
     }]
   });
-  res.status(200).send(JSON.stringify(players));
+  res.status(200).send(players);
 })
 
 module.exports = router;
