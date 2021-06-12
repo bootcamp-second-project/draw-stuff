@@ -21,6 +21,16 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
+    A get request to /api/game
+    this returns all of the game ids
+    body: none
+*/
+router.get('/', async (req, res) => {
+    const games = await Game.findAll();
+    res.status(200).send(games.map((game) => game.id));
+});
+
+/**
     A post request to /api/game
 
     body: {
@@ -31,11 +41,11 @@ router.get('/:id', async (req, res) => {
     returns: {@link Game}
  */
 router.post('/', async (req, res) => {
-    const drawList = req.body.draw_list;    
+    const drawList = req.body.draw_list;
     const numRounds = req.body.rounds;
     const roundTime = req.body.round_time;
 
-    if(drawList == null || numRounds == null || roundTime == null) {
+    if (drawList == null || numRounds == null || roundTime == null) {
         res.status(400).send({ "Error": "draw_list, rounds and round_time must all not be null" });
     } else {
         const newGame = await Game.create({
@@ -50,14 +60,14 @@ router.post('/', async (req, res) => {
 
 // get all players by game
 router.get('/:id/players', async (req, res) => {
-  const players = await Game.findAll({
-    where: { id: req.params.id },
-    include: [{
-      model: Users, 
-      through: [Game_Users]
-    }]
-  });
-  res.status(200).send(players);
+    const players = await Game.findAll({
+        where: { id: req.params.id },
+        include: [{
+            model: Users,
+            through: [Game_Users]
+        }]
+    });
+    res.status(200).send(players);
 })
 
 module.exports = router;

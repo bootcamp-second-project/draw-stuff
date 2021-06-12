@@ -56,8 +56,43 @@ async function addUserToGame(game_id, user_id, url = defaultUrl) {
     return data;
 }
 
+async function getAllGameIds(url = defaultUrl) {
+    const response = await fetch(`${url}/api/game`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return await response.json();
+}
+
 
 // need some button handling that considers the selected dropdown value
+
+let gameId;
+
+const dropdown = document.getElementById("gameOption");
+
+// addEventListener(event, function);
+dropdown.addEventListener("change", async (event) => {
+    // create | join | random
+    const selectedDropdown = event.target.value;
+    if (selectedDropdown === "create") {
+        // disable play button
+        // ask for rounds, round time, and draw list
+        // create a "create game" button 
+    } else if (selectedDropdown === "join") {
+
+        // ask for game id
+    } else if (selectedDropdown === "random") {
+        // grab a random game id from server
+        const gameIds = await getAllGameIds();
+        const randomIndex = Math.floor(Math.random() * gameIds.length);
+        gameId = gameIds[randomIndex];
+        console.log(gameId);
+    }
+});
+
 // disable the play button while creating a game is selected
 
 // have event listeners on the dropdown input??
