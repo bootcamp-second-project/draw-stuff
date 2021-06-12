@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Game, Users, Game_Users } = require('../../models');
+const { Game, Users, Game_Users, Round } = require('../../models');
 // Game_Users are players, easier to think of that way
 
 // get all players

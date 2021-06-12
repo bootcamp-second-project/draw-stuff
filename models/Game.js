@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 const Users = require('./Users');
-const Round = require('./Game_Round')
+const Round = require('./Round')
 
 
 // create our Users model
@@ -27,23 +27,26 @@ Game.init(
     },
     started: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     complete: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   },
   {
     hooks: {
-      // set up afterCreate hook for rounds
+      // set up afterCreate hook for rounds to be created
       async afterCreate(newRoundData) {
         const { draw_list, rounds } = newRoundData.dataValues
         const { phrases } = draw_list
-        console.log(phrases)
         const random = Math.floor(Math.random() * phrases.length)
         for (let i = 0; i < rounds; i++) {
           Round.create({
+            complete: false,
             round_number: i + 1,
-            phrase: phrases[Math.floor(Math.random() * phrases.length)]
+            phrase: phrases[Math.floor(Math.random() * phrases.length)],
+            game_id: 1
           })
         }
         return newRoundData

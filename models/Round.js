@@ -5,14 +5,15 @@ const Game = require('./Game');
 class Round extends Model {};
 
 Round.init({
-  // id: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  //   primaryKey: true,
-  //   autoIncrement: true
-  // },
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true
+  },
   complete: {
     type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   round_number: {
     type: DataTypes.INTEGER,
@@ -27,8 +28,7 @@ Round.init({
   timestamps: false,
   freezeTableName: true,
   underscored: true,
-  modelName: 'game_round'
-}
-)
+  modelName: 'game_rounds'
+})
 
 module.exports = Round;
