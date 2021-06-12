@@ -20,16 +20,31 @@
         <object id="drawing-board" class='min-w-min col-span-2 bg-white rounded-md' width='600' height='400'></object>
       </div>
 
-      <div id="controls" class="m-2 col-span-2 flex bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 flex-col border-2 border-blue-300 rounded-md">
-        <div id="players" class="flex-grow self-center flex flex-col w-full">
+      <div id="controls" class="m-2 col-span-2 flex bg-blue-200 flex-col border-2 border-blue-300 rounded-md">
+        <div id="players" class="self-center flex flex-col w-full">
+          <div id="drawWord" class="self-center my-4 bg-white px-5 py-3 rounded-md">Draw this word!</div>
           <!-- handlebars will gen separate player divs, hardcode one in for now -->
-          <div class="m-1 player bg-blue-300 flex items-center text-xl border-2 rounded-md">
+          <div class="m-1 player flex-col bg-blue-300 flex items-center text-xl border-2 rounded-md">
             <div class='avatar m-2 w-16 h-16 bg-white'></div>
-            <div class="username flex-grow text-center text-xl">username</div>
-            |
-            <div class="score flex-grow text-center text-xl">100</div>
+            <div class="username flex-grow text-center text-xl">player 1</div>
+            <div class="pickScore m-5">
+                <select name="score" id="score">
+                  <option value="one">1</option>
+                  <option value="two ">2</option>
+                  <option value="three">3</option>
+                  <option value="four">4</option>
+                  <option value="five">5</option>
+                  <option value="six">6</option>
+                  <option value="seven">7</option>
+                  <option value="eight">8</option>
+                  <option value="nine">9</option>
+                  <option value="ten">10</option>
+                </select>
+
+                <button id="submitScore">Submit!</button>
+            </div>
           </div>
-        </div>
+      </div>
 
         <section id='drawing-controls' class='m-1 col-span-2 flex flex-col max-h-min justify-self-start min-w-min border-2 p-2 bg-blue-300 rounded-md'>
           <div class="flex mb-1">
@@ -45,10 +60,8 @@
             <button id="stroke-btn" class='m-2 px-2 flex-grow bg-blue-200 ring-4 text-sm focus:outline-none hover:bg-blue-400'>Stroke Width</button>
           </div>
         </section>
-      </div>
 
-      <div id="vote" class="m-2 p-1 col-span-6 border-2 border-blue-300 flex-grow flex bg-blue-200 rounded-md">
-        vote buttons
+        <div class="scoreboard self-center my-4 bg-white px-5 py-3 rounded-md flex-grow">SCORING</div>
       </div>
 
     </div>
