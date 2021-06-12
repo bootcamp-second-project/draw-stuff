@@ -1,10 +1,27 @@
 const router = require('express').Router();
 const { Game, Users, Game_Users, Round } = require('../../models');
 
-
 // at ~/api/game/rounds
 router.get('/rounds', async (req, res) => {
   const rounds = await Round.findAll();
+  // Return rounds data as JSON
+  if (rounds != null) {
+      res.status(200).send(rounds);
+  } else {
+      res.status(400).send(`rounds do not exist`);
+  }
+})
+
+// at ~/api/game/rounds, update complete value
+router.put('/:id/round/:num', async (req, res) => {
+  const gameId = req.params.id
+  const roundNum = req.params.num
+  const roundOver = req.body.complete
+  // req.body looks like: { "complete": true }
+  const rounds = await Round.update(
+    { complete: roundOver },
+    { where: { round_number: roundNum, game_id: gameId } }
+  );
   // Return rounds data as JSON
   if (rounds != null) {
       res.status(200).send(rounds);
@@ -26,10 +43,12 @@ router.get('/:id', async (req, res) => {
       where: { id: req.params.id },
       include: [
         {
+          // get user data with game
           model: Users, 
           through: [Game_Users],
         }, 
         { 
+          // get round data with game
           model: Round,
           as: 'game_rounds'
         }

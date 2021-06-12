@@ -61,6 +61,6 @@ io.on('connection', (socket) => {
 app.use(routes);
 
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ force: false }).then(() => {
   server.listen(PORT, () => {console.log('sequelize now listening.')});
 })
