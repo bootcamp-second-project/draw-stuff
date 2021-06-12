@@ -42,25 +42,6 @@ router.get('/:id', async (req, res) => {
         res.status(400).send(`Game ID ${req.params.id} does not exist`);
     }
 });
-
-// at ~/api/game/1/rounds
-router.get('/:id/rounds', async (req, res) => {
-  const game = await Game.findOne({
-    where: { id: req.params.id },
-    include: [{ 
-      model: Round,
-      as: 'game_rounds',
-      where: { game_id: req.params.id }
-    }]
-  })
-  // Return game data as JSON
-  if (game != null) {
-      res.status(200).send(game);
-  } else {
-      res.status(400).send(`Game ID ${req.params.id} does not exist`);
-  }
-})
-
 /**
     A post request to /api/game
 

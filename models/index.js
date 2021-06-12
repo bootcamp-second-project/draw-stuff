@@ -11,7 +11,6 @@ Users.belongsToMany(Game, {
   through: Game_Users
 })
 
-// associations for round give the round table name game_rounds???
 Game.hasMany(Round, {
   foreignKey: 'game_id'
 })

@@ -37,8 +37,8 @@ Game.init(
   {
     hooks: {
       // set up afterCreate hook for rounds to be created
-      async afterCreate(newRoundData) {
-        const { draw_list, rounds } = newRoundData.dataValues
+      async afterCreate(newGameData) {
+        const { id, draw_list, rounds } = newGameData.dataValues
         const { phrases } = draw_list
         const random = Math.floor(Math.random() * phrases.length)
         for (let i = 0; i < rounds; i++) {
@@ -46,10 +46,11 @@ Game.init(
             complete: false,
             round_number: i + 1,
             phrase: phrases[Math.floor(Math.random() * phrases.length)],
-            game_id: 1
+            // just 
+            game_id: id
           })
         }
-        return newRoundData
+        return newGameData
       }
     },
     sequelize,
