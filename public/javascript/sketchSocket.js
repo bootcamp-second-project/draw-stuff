@@ -2,43 +2,45 @@ const url = window.location.href.split('/')
 const gameRoom = url[url.length - 1]
 let drawingPlayer
 let scoringPlayers
-let currentSid = sessionStorage.getItem('sid')
+let gameRounds
+let currentUser = JSON.parse(sessionStorage.getItem('user'))
+console.log(currentUser)
 
 // sessionStorage.setItem('sid', `${session_id}`)
-const playerData = async (gameId) => {
-  // fetch for grabbing users and game data
-  const response = await fetch(`/api/game/${gameId}/players`,{
+const gameData = async (gameId) => {
+  // fetch for grabbing game data, includes player and round datas
+  const dbGameData = await fetch(`/api/game/${gameId}`,{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   }).then(res => res.json())
-  // console.log(response[0].users)
-  players = response[0].users.map((player) => {
-    const data = {
-      session: player.session_id,
+  // map players to a new array
+  players = dbGameData.users.map((player) => {
+    const playerObj = {
+      id: player.id,
       score: player.game_users.score,
-      drawing: player.game_users.drawing
+      drawing: player.game_users.drawing,
+      session_id: player.session_id,
     }
-    return data
+    return playerObj
   })
+  // update round data
+  gameRounds = dbGameData.game_rounds
+  // update drawingPlayer and scoringPlayers with current list
   drawingPlayer = players.filter((player) => player.drawing === true)
-  scoringPlayers = players.filter((player) => player.drawing === true)
-
-  console.log(drawingPlayer)
+  scoringPlayers = players.filter((player) => player.drawing === false)
 }
-playerData(gameRoom)
+gameData(gameRoom)
 
-// authorize user to draw according to the session ids of drawing player
-// use this to prevent socket broadcasting by non-drawing users later
+// timers to allow each user to draw consecutively...?
+// timer to run gameData would keep local variables updated 
 
-// timers to allow each user to draw consecutively
-
-// need fetch to update the word currently drawing
-
-// update all players drawing to false for 5 seconds at end of round
-// set the currently drawing user
+// an update to game round completion will happen only on drawer's side
+// after updating the round to complete...
+// drawer sets next player to draw true, then self to draw false
 
 // post fetch to update user scores as the game is played
 // will run after scoring players press vote buttons
+// hide the vote buttons for drawing player!!
 
 let socket
 let color = '#111'
@@ -92,15 +94,14 @@ function setup() {
 }
 
 function mouseDragged() {
-	// Draw
 	stroke(color)
 	strokeWeight(strokeWidth)
-  // check user against currently drawing user by session id before broadcasting??
-  if (currentSid === drawingPlayer[0].session) {
+  // authorize user to draw according to the session id of drawing player
+  if (currentUser.session_id === drawingPlayer[0].session_id) {
 	  line(mouseX, mouseY, pmouseX, pmouseY)
+    // Send the mouse coordinates
     sendmouse(mouseX, mouseY, pmouseX, pmouseY)
   }
-	// Send the mouse coordinates
 }
 
 // Sending data to the socket
