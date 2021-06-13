@@ -6,6 +6,12 @@ let gameRounds
 let currentUser = JSON.parse(sessionStorage.getItem('user'))
 console.log(currentUser)
 
+// grab relevant elements here...
+const drawWordEl = document.getElementById('draw-word')
+const drawerAvatarEl = document.getElementById('drawer-avatar')
+const drawerUsernameEl = document.getElementById('drawer-username')
+const scoringPlayersEl = document.getElementById('scoring-players')
+
 // sessionStorage.setItem('sid', `${session_id}`)
 const gameData = async (gameId) => {
   // fetch for grabbing game data, includes player and round datas
@@ -25,22 +31,50 @@ const gameData = async (gameId) => {
   })
   // update round data
   gameRounds = dbGameData.game_rounds
+  // sort gameRounds by round_number
+
   // update drawingPlayer and scoringPlayers with current list
   drawingPlayer = players.filter((player) => player.drawing === true)
   scoringPlayers = players.filter((player) => player.drawing === false)
 }
-gameData(gameRoom)
+
 
 // timers to allow each user to draw consecutively...?
-// timer to run gameData would keep local variables updated 
+  // timer for drawing would have to initiate on drawer's client
+    // after they press start draw button?? could be helpful!!
+    // this would only show up on the drawing player's client!
+  // after the timer ends, update the drawer to draw false
+  // and update the next player to draw true
 
-// an update to game round completion will happen only on drawer's side
-// after updating the round to complete...
-// drawer sets next player to draw true, then self to draw false
+// timer to run gameData keeps local variables updated with db
+var dataUpdateTimer = setInterval(() => {
+  gameData(gameRoom)
+  pageRender();
+},1000); // runs every 1000 milliseconds
+
+
+// update page elements
+const pageRender = () => {
+  // update drawing player 
+
+  // scoring players list update
+  let scoringPlayerCards = scoringPlayers.map((player) => {
+    return (
+`<div id="scoring-player" class="m-2 flex flex-grow ring-2 items-center text-xl rounded-sm">
+  <div id='scorer-avatar' class='avatar m-2 w-8 h-8 bg-blue-300'></div>
+  <div id='scorer-username' class="flex-grow text-center text-xl self-center">${player.username}</div>
+  |
+  <div id='scorer-score' class="flex-grow text-center text-xl self-center">100</div>
+</div>`
+    )
+  })
+  console.log('Scoring players' + scoringPlayerCards)
+  // draw word element
+}
 
 // post fetch to update user scores as the game is played
-// will run after scoring players press vote buttons
-// hide the vote buttons for drawing player!!
+  // will run after scoring players press vote buttons
+  // hide the vote buttons for drawing player!!
 
 let socket
 let color = '#111'
@@ -49,7 +83,7 @@ let cv
 
 function setup() {
   // Creating canvas
-	cv = createCanvas(600, 400)
+	cv = createCanvas(600, 600)
   let originParent = cv.parent()
   cv.parent('#drawing-board')
   originParent.remove()
