@@ -11,8 +11,8 @@ const drawWordEl = document.getElementById('draw-word')
 const drawerAvatarEl = document.getElementById('drawer-avatar')
 const drawerUsernameEl = document.getElementById('drawer-username')
 const scoringPlayersContainer = document.getElementById('scoring-players')
+const scoreForm = document.getElementById('score-form')
 
-// sessionStorage.setItem('sid', `${session_id}`)
 const gameData = async (gameId) => {
   // fetch for grabbing game data, includes player and round datas
   const dbGameData = await fetch(`/api/game/${gameId}`,{
@@ -22,14 +22,14 @@ const gameData = async (gameId) => {
 
   // map players to a new array
   players = dbGameData.users.map((player) => {
-    const playerObj = {
+    const playerData = {
       username: player.username,
       id: player.id,
       score: player.game_users.score,
       drawing: player.game_users.drawing,
       session_id: player.session_id,
     }
-    return playerObj
+    return playerData
   })
   // update drawingPlayer and scoringPlayers with current list from players
   drawingPlayer = players.filter((player) => player.drawing === true).shift()
@@ -76,14 +76,75 @@ const pageRender = () => {
   // update the HTML to show scoring players
   scoringPlayersContainer.innerHTML = scoringPlayerCards
   // draw word element
-  console.log(remainingRounds[0].phrase)
   drawWordEl.textContent = remainingRounds[0].phrase
+
+  // hide/unhide the vote form for drawing/scoring players
+
 }
 
-// post fetch to update user scores as the game is played
+// put fetch function to update user scores as the game is played
   // will run after scoring players press vote buttons
-  // hide the vote buttons for drawing player!!
+const scoreUpdateDB = async (user_id, score) => {
+  const response = await fetch(`/api/player/${user_id}/score`, {
+    method: 'PUT',
+    body: JSON.stringify({ "score": score }),
+    headers: { 'Content-Type': 'application/json'}
+  })
+  console.log(response)
+  if (response.ok) {
+    return response
+  } else {
+    console.log(response.statusText)
+  }
+}
 
+// put fetch to update player drawing status takes id and boolean
+const drawingUpdateDB = async (user_id, drawing) => {
+  const response = await fetch(`/api/player/${user_id}/drawing`, {
+    method: 'PUT',
+    body: JSON.stringify({ "drawing": drawing }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  console.log(response)
+  if (response.ok) {
+    return response
+  } else {
+    console.log(response.statusText)
+  }
+}
+
+// put fetch to update game completion takes id and 2 booleans
+const gameUpdateDB = async (game_id, complete, started) => {
+  const response = await fetch(`/api/game/${game_id}/play`, {
+    method: 'PUT',
+    body: JSON.stringify({ "complete": complete, "started": started }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  console.log(response)
+  if (response.ok) {
+    return response
+  } else {
+    console.log(response.statusText)
+  }
+}
+
+// put fetch to update round completion, 2 ints and a boolean
+const roundUpdateDB = async (game_id, round_number, complete) => {
+  const response = await fetch(`/api/game/${game_id}/round/${round_number}`, {
+    method: 'PUT',
+    body: JSON.stringify({ "complete": complete }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  console.log(response)
+  if (response.ok) {
+    return response
+  } else {
+    console.log(response.statusText)
+  }
+}
+
+
+// all things related to the canvas, socket and drawing after this line
 let socket
 let color = '#111'
 let strokeWidth = 4
