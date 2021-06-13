@@ -2,7 +2,7 @@ const url = window.location.href.split('/')
 const gameRoom = url[url.length - 1]
 let drawingPlayer
 let scoringPlayers
-let gameRounds
+let remainingRounds
 let currentUser = JSON.parse(sessionStorage.getItem('user'))
 console.log(currentUser)
 
@@ -10,7 +10,7 @@ console.log(currentUser)
 const drawWordEl = document.getElementById('draw-word')
 const drawerAvatarEl = document.getElementById('drawer-avatar')
 const drawerUsernameEl = document.getElementById('drawer-username')
-const scoringPlayersEl = document.getElementById('scoring-players')
+const scoringPlayersContainer = document.getElementById('scoring-players')
 
 // sessionStorage.setItem('sid', `${session_id}`)
 const gameData = async (gameId) => {
@@ -19,9 +19,11 @@ const gameData = async (gameId) => {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   }).then(res => res.json())
+
   // map players to a new array
   players = dbGameData.users.map((player) => {
     const playerObj = {
+      username: player.username,
       id: player.id,
       score: player.game_users.score,
       drawing: player.game_users.drawing,
@@ -29,13 +31,14 @@ const gameData = async (gameId) => {
     }
     return playerObj
   })
-  // update round data
-  gameRounds = dbGameData.game_rounds
-  // sort gameRounds by round_number
-
-  // update drawingPlayer and scoringPlayers with current list
-  drawingPlayer = players.filter((player) => player.drawing === true)
+  // update drawingPlayer and scoringPlayers with current list from players
+  drawingPlayer = players.filter((player) => player.drawing === true).shift()
   scoringPlayers = players.filter((player) => player.drawing === false)
+  
+  // update round data, sorted by round number, filter for uncompleted rnds
+  remainingRounds = dbGameData.game_rounds
+    .sort((a, b) => (a.round_number < b.round_number ? -1 : 1))
+    .filter((r) => r.complete === false)
 }
 
 
@@ -46,30 +49,35 @@ const gameData = async (gameId) => {
   // after the timer ends, update the drawer to draw false
   // and update the next player to draw true
 
-// timer to run gameData keeps local variables updated with db
-var dataUpdateTimer = setInterval(() => {
-  gameData(gameRoom)
-  pageRender();
-},1000); // runs every 1000 milliseconds
+const dataUpdateTimer = setInterval(async () => {
+  // timer to run gameData keeps local variables updated with db
+  await gameData(gameRoom)
+  pageRender()
+},1000) // runs every 1000 milliseconds
 
 
 // update page elements
 const pageRender = () => {
   // update drawing player 
-
+  if (drawingPlayer) {
+    drawerUsernameEl.innerHTML = drawingPlayer.username
+  }
   // scoring players list update
-  let scoringPlayerCards = scoringPlayers.map((player) => {
+  const scoringPlayerCards = scoringPlayers.map((player) => {
     return (
 `<div id="scoring-player" class="m-2 flex flex-grow ring-2 items-center text-xl rounded-sm">
   <div id='scorer-avatar' class='avatar m-2 w-8 h-8 bg-blue-300'></div>
   <div id='scorer-username' class="flex-grow text-center text-xl self-center">${player.username}</div>
   |
-  <div id='scorer-score' class="flex-grow text-center text-xl self-center">100</div>
+  <div id='scorer-score' class="flex-grow text-center text-xl self-center">${player.score}</div>
 </div>`
     )
-  })
-  console.log('Scoring players' + scoringPlayerCards)
+  }).join("") // join removes commas, returns string
+  // update the HTML to show scoring players
+  scoringPlayersContainer.innerHTML = scoringPlayerCards
   // draw word element
+  console.log(remainingRounds[0].phrase)
+  drawWordEl.textContent = remainingRounds[0].phrase
 }
 
 // post fetch to update user scores as the game is played
@@ -131,7 +139,7 @@ function mouseDragged() {
 	stroke(color)
 	strokeWeight(strokeWidth)
   // authorize user to draw according to the session id of drawing player
-  if (currentUser.session_id === drawingPlayer[0].session_id) {
+  if (currentUser.session_id === drawingPlayer.session_id) {
 	  line(mouseX, mouseY, pmouseX, pmouseY)
     // Send the mouse coordinates
     sendmouse(mouseX, mouseY, pmouseX, pmouseY)
