@@ -2,7 +2,15 @@ const router = require('express').Router();
 const { Game, Users, Game_Users, Round } = require('../../models');
 // The `/api/account` endpoint
 
-
+router.get('/', async (req, res) => {
+  const users = await Users.findAll();
+  // Return user data as JSON
+  if (users != null) {
+      res.status(200).send(users);
+  } else {
+      res.status(400).send(`Users do not exist`);
+  }
+})
 /**
     A get request to /api/account/5
     would return info about user with ID 5
