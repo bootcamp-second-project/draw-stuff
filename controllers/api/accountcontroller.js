@@ -21,7 +21,13 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
     // Find user by primary key ID
-    const user = await Users.findByPk(id);
+    const user = await Users.findOne({
+      where: { id: id },
+      include: [{
+        model: Game,
+        through: [Game_Users]
+      }]
+    });
     // Return user data as JSON
     if (user != null) {
         res.status(200).send(user);
@@ -54,14 +60,5 @@ router.post('/', async (req, res) => {
         res.status(200).send(newUser);
     }
 });
-
-// get all games by player
-router.get('/:id/played', async (req, res) => {
-  const players = await Users.findAll({
-    where: { id: req.params.id },
-    include: [Game]
-  });
-  res.status(200).send(players);
-})
 
 module.exports = router;
