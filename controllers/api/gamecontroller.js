@@ -109,7 +109,7 @@ router.put('/:id/play', async (req, res) => {
     res.status(400).send({ "Error":"no nulls for id, complete or started" });
   } else {
     const drawingUpdate = await Game.update(req.body, {
-      where: { userId: playerId }
+      where: { "id": gameId}
     })
     res.status(200).send(drawingUpdate)
   }
