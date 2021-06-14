@@ -20,6 +20,10 @@ Round.init({
   },
   phrase: {
     type: DataTypes.STRING,
+  },
+  left_to_draw: {
+    type: DataTypes.JSON,
+    defaultValue: { drawers: [] }
   }
 },
 {
