@@ -27,11 +27,13 @@ router.post('/', async (req, res, err) => {
   if (gameId == null || userId == null) {
     res.status(400).send({ "Error":"game_id and user_id must both not be null" });
   } else {
-    const newPlayer = await Game_Users.build({
+    const newPlayer = await Game_Users.create({
       "gameId": gameId,
       "userId": userId
     });
-    newPlayer.save() ? res.status(200).send(newPlayer) : console.log(err);
+    newPlayer
+      ? res.status(200).send(newPlayer)
+      : res.status(400).send({ "Error":"no relevant game or user found" });
   }
 });
 

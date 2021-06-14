@@ -12,21 +12,53 @@ router.get('/rounds', async (req, res) => {
   }
 })
 
-// at ~/api/game/rounds, update complete value
+router.get('/:id/round/:num', async (req, res) => {
+  const gameId = req.params.id
+  const roundNum = req.params.num
+  const round = await Round.findOne(
+    { where: { round_number: roundNum, game_id: gameId } }
+  )
+  if (round != null) {
+    res.status(200).send(round);
+  } else {
+    res.status(400).send(`round does not exist`);
+  }
+})
+
+// at ~/api/game/1/round/1, update complete value
 router.put('/:id/round/:num', async (req, res) => {
   const gameId = req.params.id
   const roundNum = req.params.num
   const roundOver = req.body.complete
-  // req.body looks like: { "complete": true }
-  const rounds = await Round.update(
-    { complete: roundOver },
-    { where: { round_number: roundNum, game_id: gameId } }
-  );
-  // Return rounds data as JSON
-  if (rounds != null) {
-      res.status(200).send(rounds);
+  const playerDoneDrawing = req.body.player_done
+  // req.body looks like: { "complete": true, "player_done": true }
+  if (playerDoneDrawing) {
+    const currentRound = await Round.findOne(
+      { where: { round_number: roundNum, game_id: gameId } }
+    )
+    // grab players left from round
+    const playersLeft = currentRound.left_to_draw
+    playersLeft.sort((a, b) => (a < b ? -1 : 1))
+    const removed = playersLeft.shift() // remove the first value
+    const roundUpdate = await Round.update(
+      { left_to_draw: playersLeft },
+      { where: { round_number: roundNum, game_id: gameId } }
+    )
+    if (roundUpdate != null) {
+      res.status(200).send(roundUpdate);
+    } else {
+      res.status(400).send(`round does not exist`);
+    }
   } else {
-      res.status(400).send(`rounds do not exist`);
+    const roundUpdate = await Round.update(
+      { complete: roundOver },
+      { where: { round_number: roundNum, game_id: gameId } }
+    )
+    if (roundUpdate != null) {
+      res.status(200).send(roundUpdate);
+    } else {
+      res.status(400).send(`round does not exist`);
+    }
   }
 })
 

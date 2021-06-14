@@ -35,13 +35,12 @@ Game_Users.init(
           const drawerList = roundData.dataValues.left_to_draw.drawers
           // add new player's user ID to the array
           drawerList.push(userId)
+          const sortDrawerList = drawerList.sort((a, b) => (a < b ? -1 : 1))
           const updateRoundDrawList = await Round.update(
-            { left_to_draw: { drawers: drawerList } }, 
-            { where: { id: round } })
-          console.log(updateRoundDrawList)
+            { left_to_draw: { drawers: sortDrawerList } }, 
+            { where: { id: round } }
+          )
         })
-        // push to an array in left_to_draw
-        // await Round.update({ where: { game_id: gameId } })
       }
     },
     sequelize,

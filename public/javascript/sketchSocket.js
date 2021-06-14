@@ -194,10 +194,10 @@ const gameUpdateDB = async (game_id, complete, started) => {
 }
 
 // put fetch to update round completion, 2 ints and a boolean
-const roundUpdateDB = async (game_id, round_number, complete) => {
+const roundUpdateDB = async (game_id, round_number, complete, player_done) => {
   const response = await fetch(`/api/game/${game_id}/round/${round_number}`, {
     method: 'PUT',
-    body: JSON.stringify({ "complete": complete }),
+    body: JSON.stringify({ "complete": complete, "player_done": player_done }),
     headers: { 'Content-Type': 'application/json' }
   })
   console.log(response)
