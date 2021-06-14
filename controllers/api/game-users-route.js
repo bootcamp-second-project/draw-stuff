@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Game, Users, Game_Users } = require('../../models');
+const { Game, Users, Game_Users, Round } = require('../../models');
 // Game_Users are players, easier to think of that way
 
 // get all players
@@ -27,11 +27,13 @@ router.post('/', async (req, res, err) => {
   if (gameId == null || userId == null) {
     res.status(400).send({ "Error":"game_id and user_id must both not be null" });
   } else {
-    const newPlayer = await Game_Users.build({
+    const newPlayer = await Game_Users.create({
       "gameId": gameId,
       "userId": userId
     });
-    newPlayer.save() ? res.status(200).send(newPlayer) : console.log(err);
+    newPlayer
+      ? res.status(200).send(newPlayer)
+      : res.status(400).send({ "Error":"no relevant game or user found" });
   }
 });
 
@@ -61,7 +63,7 @@ router.put('/:id/score', async (req, res) => {
     res.status(400).send({ "Error":"no nulls for playerId or drawing" });
   } else {
     const currentScore = await Game_Users.findOne({ where: { userId: playerId } })
-    const newScore = score + currentScore.dataValues.score;
+    const newScore = parseInt(score) + parseInt(currentScore.dataValues.score);
     const scoreAdd = await Game_Users.update({ score: newScore }, {
       where: { userId: playerId }
     })

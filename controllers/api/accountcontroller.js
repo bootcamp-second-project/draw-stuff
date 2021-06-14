@@ -1,8 +1,16 @@
 const router = require('express').Router();
-const { Game, Users, Game_Users } = require('../../models');
+const { Game, Users, Game_Users, Round } = require('../../models');
 // The `/api/account` endpoint
 
-
+router.get('/', async (req, res) => {
+  const users = await Users.findAll();
+  // Return user data as JSON
+  if (users != null) {
+      res.status(200).send(users);
+  } else {
+      res.status(400).send(`Users do not exist`);
+  }
+})
 /**
     A get request to /api/account/5
     would return info about user with ID 5
@@ -13,7 +21,13 @@ const { Game, Users, Game_Users } = require('../../models');
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
     // Find user by primary key ID
-    const user = await Users.findByPk(id);
+    const user = await Users.findOne({
+      where: { id: id },
+      include: [{
+        model: Game,
+        through: [Game_Users]
+      }]
+    });
     // Return user data as JSON
     if (user != null) {
         res.status(200).send(user);
@@ -46,14 +60,5 @@ router.post('/', async (req, res) => {
         res.status(200).send(newUser);
     }
 });
-
-// get all games by player
-router.get('/:id/played', async (req, res) => {
-  const players = await Users.findAll({
-    where: { id: req.params.id },
-    include: [Game]
-  });
-  res.status(200).send(players);
-})
 
 module.exports = router;

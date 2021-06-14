@@ -8,7 +8,10 @@ router.use('/player', playerRoute);
 
 // route to interact with users table in database
 router.use('/users', usersRoute);
-// route to interact with game table in database
+
+// route to interact with game and associated round tables
 router.use('/game', gameRoute);
+
+
 
 module.exports = router;
