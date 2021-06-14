@@ -1,0 +1,62 @@
+[33mc212583[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/html-pages[m[33m)[m html layout changes
+[33m88f89ef[m fixes to layout
+[33m2bfbe25[m[33m ([m[1;31morigin/feature/html-pages[m[33m)[m drawing board made larger, fixed incorrect comment
+[33mffd295d[m layout changes to play page
+[33me3762cc[m HTML and color scheme changes
+[33mfce4d2a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Merge pull request #9 from bootcamp-second-project/develop
+[33ma2feb51[m Merge pull request #8 from bootcamp-second-project/feature/websocket
+[33m1afafbd[m[33m ([m[1;31morigin/feature/websocket[m[33m)[m add pseudocode for front end functionality
+[33mb1747f6[m server.listen update
+[33mc6346c6[m update board controls
+[33me65ea77[m Merge branch 'main' of https://git.heroku.com/draw-in-rooms into feature/websocket
+[33m2611fe2[m merge controller updates from develop
+[33m448a687[m Merge branch 'controllers' into develop
+[33mef8f341[m[33m ([m[1;31morigin/controllers[m[33m)[m player scores and drawing bool can now be updated
+[33me60d4ac[m add game_users routes, players can be created
+[33m6ee7c6b[m :recycle: refactor controller api routing
+[33md33b759[m fix starter for heroku deploy, towards #6
+[33m9d82b87[m fix starter
+[33m4428bc3[m :rocket: rooms initiate join in front end using url
+[33mb2e7dab[m color scheme updates to play page
+[33m44a3cae[m merge updates from develop
+[33mc45ef01[m update package files to remove tailwind
+[33mf50c15e[m change draw list to JSON
+[33m2319670[m Merge branch 'controllers' into develop
+[33m47c9b9a[m took 2 seconds for controllers my bad
+[33med50dca[m almost done with rooms! :zap:
+[33mdd13916[m merge updates from develop
+[33m1afa3ed[m merge controllers and html-pages
+[33m561c1d8[m Merge branch 'controllers' into develop
+[33mc69acd4[m Merge branch 'feature/html-pages' into develop
+[33m908a592[m add play page, close #4
+[33m26a4209[m :adhesive_bandage: update modelName woops
+[33mb41a421[m :sparkles: add associative table to connect users to the game and hold score
+[33m13ec515[m second smiley face updated
+[33m470bdbc[m smileyface
+[33me11d971[m Merge branch 'feature/initial-models' of https://github.com/bootcamp-second-project/draw-stuff into controllers
+[33m6f45ba8[m Merge branch 'controllers' of https://github.com/bootcamp-second-project/draw-stuff into controllers
+[33m6fc7ac5[m[33m ([m[1;31morigin/feature/initial-models[m[33m)[m fixed the 4-30 chracter req
+[33mb96f8db[m .
+[33mf673bf8[m .
+[33m5aa3905[m socket works with sequelize, updated public
+[33mdef1b23[m resolve merge with feature/html-pages
+[33mf2e24b5[m add routes to server, fix some more typos smh
+[33mece23a3[m :pencil2: fix some typos yikes
+[33m0629938[m update index and play-route
+[33ma56b1eb[m update index and play-route
+[33m345c71c[m add route index and front end route
+[33m77d0242[m add route index and front end route
+[33m62c08f4[m framework almost done, small design changes
+[33m4505098[m Merge branch 'controllers' of https://github.com/bootcamp-second-project/draw-stuff into controllers
+[33m8ab6249[m Merge branch 'develop' into controllers
+[33m2673b43[m add index to database
+[33mbee8d60[m set up initial models
+[33md5d0973[m initial framework for homepage
+[33m8e40e4a[m add basic socket and drawing board code
+[33m5271bb5[m routes layout and images added
+[33m68a5448[m set up route structure
+[33m2e4b2bb[m add sessions
+[33mcb1c2e4[m update .gitignore
+[33m56c1d7c[m add readme and update package, add MVC structure
+[33mc9e1f53[m git keeped folders
+[33mc7bc27d[m starter code :)
