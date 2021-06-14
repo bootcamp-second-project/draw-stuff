@@ -1,34 +1,92 @@
-const url = window.location.href.split('/');
-const gameRoom = url[url.length - 1];
+const url = window.location.href.split('/')
+const gameRoom = url[url.length - 1]
+let drawingPlayer
+let scoringPlayers
+let gameRounds
+let currentUser = JSON.parse(sessionStorage.getItem('user'))
+console.log(currentUser)
 
-// fetch for grabbing users and game data
-// fetch from '.../api/game/1/players'
-// list session ids with gamePlayersObj.users[*].session_id
+// grab relevant elements here...
+const drawWordEl = document.getElementById('draw-word')
+const drawerAvatarEl = document.getElementById('drawer-avatar')
+const drawerUsernameEl = document.getElementById('drawer-username')
+const scoringPlayersEl = document.getElementById('scoring-players')
 
-// authorize user to draw according to the session ids of drawing player
-// use this to prevent socket broadcasting by non-drawing users later
+// sessionStorage.setItem('sid', `${session_id}`)
+const gameData = async (gameId) => {
+  // fetch for grabbing game data, includes player and round datas
+  const dbGameData = await fetch(`/api/game/${gameId}`,{
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  }).then(res => res.json())
+  // map players to a new array
+  players = dbGameData.users.map((player) => {
+    const playerObj = {
+      id: player.id,
+      score: player.game_users.score,
+      drawing: player.game_users.drawing,
+      session_id: player.session_id,
+    }
+    return playerObj
+  })
+  // update round data
+  gameRounds = dbGameData.game_rounds
+  // sort gameRounds by round_number
 
-// timers to allow each user to draw consecutively
+  // update drawingPlayer and scoringPlayers with current list
+  drawingPlayer = players.filter((player) => player.drawing === true)
+  scoringPlayers = players.filter((player) => player.drawing === false)
+}
 
-// need fetch to update 
 
-// update all players drawing to false for 5 seconds at end of round
-// set the currently drawing user
+// timers to allow each user to draw consecutively...?
+  // timer for drawing would have to initiate on drawer's client
+    // after they press start draw button?? could be helpful!!
+    // this would only show up on the drawing player's client!
+  // after the timer ends, update the drawer to draw false
+  // and update the next player to draw true
+
+// timer to run gameData keeps local variables updated with db
+var dataUpdateTimer = setInterval(() => {
+  gameData(gameRoom)
+  pageRender();
+},1000); // runs every 1000 milliseconds
+
+
+// update page elements
+const pageRender = () => {
+  // update drawing player 
+
+  // scoring players list update
+  let scoringPlayerCards = scoringPlayers.map((player) => {
+    return (
+`<div id="scoring-player" class="m-2 flex flex-grow ring-2 items-center text-xl rounded-sm">
+  <div id='scorer-avatar' class='avatar m-2 w-8 h-8 bg-blue-300'></div>
+  <div id='scorer-username' class="flex-grow text-center text-xl self-center">${player.username}</div>
+  |
+  <div id='scorer-score' class="flex-grow text-center text-xl self-center">100</div>
+</div>`
+    )
+  })
+  console.log('Scoring players' + scoringPlayerCards)
+  // draw word element
+}
 
 // post fetch to update user scores as the game is played
-// will run after scoring players press vote buttons
+  // will run after scoring players press vote buttons
+  // hide the vote buttons for drawing player!!
 
 let socket
-let color = '#000'
+let color = '#111'
 let strokeWidth = 4
 let cv
 
 function setup() {
   // Creating canvas
-	cv = createCanvas(600, 400)
-  let originParent = cv.parent();
-  cv.parent('#drawing-board');
-  originParent.remove();
+	cv = createCanvas(600, 600)
+  let originParent = cv.parent()
+  cv.parent('#drawing-board')
+  originParent.remove()
 	cv.background(255, 255, 255)
 	// Start the socket connection
 	socket = io.connect()
@@ -70,13 +128,14 @@ function setup() {
 }
 
 function mouseDragged() {
-	// Draw
 	stroke(color)
 	strokeWeight(strokeWidth)
-	line(mouseX, mouseY, pmouseX, pmouseY)
-
-	// Send the mouse coordinates
-	sendmouse(mouseX, mouseY, pmouseX, pmouseY)
+  // authorize user to draw according to the session id of drawing player
+  if (currentUser.session_id === drawingPlayer[0].session_id) {
+	  line(mouseX, mouseY, pmouseX, pmouseY)
+    // Send the mouse coordinates
+    sendmouse(mouseX, mouseY, pmouseX, pmouseY)
+  }
 }
 
 // Sending data to the socket
@@ -89,7 +148,6 @@ function sendmouse(x, y, pX, pY) {
 		color: color,
 		strokeWidth: strokeWidth,
 	}
-  // check user against currently drawing user by session id before broadcasting??
-	socket.emit('mouse', data)
+  socket.emit('mouse', data)
 }
 
