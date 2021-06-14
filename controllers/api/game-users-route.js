@@ -63,7 +63,7 @@ router.put('/:id/score', async (req, res) => {
     res.status(400).send({ "Error":"no nulls for playerId or drawing" });
   } else {
     const currentScore = await Game_Users.findOne({ where: { userId: playerId } })
-    const newScore = score + currentScore.dataValues.score;
+    const newScore = parseInt(score) + parseInt(currentScore.dataValues.score);
     const scoreAdd = await Game_Users.update({ score: newScore }, {
       where: { userId: playerId }
     })
