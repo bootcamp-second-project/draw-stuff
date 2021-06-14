@@ -37,7 +37,7 @@ Game_Users.init(
           drawerList.push(userId)
           const sortDrawerList = drawerList.sort((a, b) => (a < b ? -1 : 1))
           const updateRoundDrawList = await Round.update(
-            { left_to_draw: { drawers: sortDrawerList } }, 
+            { left_to_draw: { "drawers": sortDrawerList } }, 
             { where: { id: round } }
           )
         })

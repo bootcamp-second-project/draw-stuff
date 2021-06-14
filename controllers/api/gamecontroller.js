@@ -37,11 +37,11 @@ router.put('/:id/round/:num', async (req, res) => {
       { where: { round_number: roundNum, game_id: gameId } }
     )
     // grab players left from round
-    const playersLeft = currentRound.left_to_draw
+    const playersLeft = currentRound.dataValues.left_to_draw.drawers
     playersLeft.sort((a, b) => (a < b ? -1 : 1))
     const removed = playersLeft.shift() // remove the first value
     const roundUpdate = await Round.update(
-      { left_to_draw: playersLeft },
+      { left_to_draw: {"drawers": playersLeft} },
       { where: { round_number: roundNum, game_id: gameId } }
     )
     if (roundUpdate != null) {

@@ -1,11 +1,12 @@
 const url = window.location.href.split('/')
 const gameRoom = url[url.length - 1]
-let scored
-let drawStarted
-let drawingPlayer
-let scoringPlayers
-let currentRound
-let roundLength
+let scored // local to prevent rescoring
+let drawStarted // local to hide start drawing button
+let drawingPlayer // player set to draw true in db
+let scoringPlayers // players set to draw false in db
+let currentRound // lowest round_number for game in db
+let leftToDraw // dynamic list, shortens as game goes on
+let roundLength // from game obj
 let currentUser = JSON.parse(sessionStorage.getItem('user')) || { "session_id": "hehe" }
 
 // grab relevant elements here...
@@ -18,7 +19,6 @@ const submitButtonEl = document.getElementById('submit-score')
 const scoreSelectEl = document.getElementById('score')
 const boardControlsEl = document.getElementById('drawing-controls-section')
 const startRoundButtonEl = document.getElementById('start-draw-btn')
-console.log(boardControlsEl)
 
 // async fetch to grab data from database
 const gameData = async (gameId) => {
@@ -52,14 +52,8 @@ const gameData = async (gameId) => {
     .sort((a, b) => (a.round_number < b.round_number ? -1 : 1))
     .filter((r) => r.complete === false)
     .shift()
+  leftToDraw = currentRound.left_to_draw.drawers
 }
-
-// timers to allow each user to draw consecutively...?
-  // timer for drawing would have to initiate on drawer's client
-    // after they press start draw button?? could be helpful!!
-    // this would only show up on the drawing player's client!
-  // after the timer ends, update the drawer to draw false
-  // and update the next player to draw true
 
 // interval timer for data fetching continuously
 const gameDataUpdater = () => {
@@ -71,25 +65,32 @@ const gameDataUpdater = () => {
 }
 gameDataUpdater()
 
-const roundTimer = () => {
-  roundUpdateDB(gameRoom, currentRound.round_number, 1)
-}
-
 const playerDrawTimer = () => {
+  // timer to allow each user to draw consecutively
+  // initiates on drawer's client after they press start draw button
   const timer = setTimeout(async () => {
-    // waits and then updates currently drawing player
-    const drawOff = await drawingUpdateDB(drawingPlayer.id, 0)
-    const drawOn = await drawingUpdateDB(scoringPlayers[0].id, 1)
+    // after the timer ends, update the drawer to draw false
+    // and update the next player to draw true
     drawStarted = false
+    // turn drawing off for drawing player
+    const drawOff = await drawingUpdateDB(drawingPlayer.id, 0)
+    // update round's left_to_draw list
+    const shiftDrawList = await roundUpdateDB(gameRoom, currentRound.round_number, 0, 1)
+    // refresh the list in local variables
+    await gameData(gameRoom)
+    // check if leftToDraw has any left
+    if (leftToDraw[0] === undefined) {
+      // end round if there aren't any drawers left
+      const roundEnd = await roundUpdateDB(gameRoom, currentRound.round_number, 1, 0)
+      const startRoundDrawer = await drawingUpdateDB(scoringPlayers[0].id, 1)
+    } else {
+      // turn drawing on for the next player
+      const drawOn = await drawingUpdateDB(leftToDraw[0], 1)
+    }
+    drawStarted = false // sets value in previous drawers client
     cv.background(255, 255, 255)
-    const datum = {
-      x: 300,
-      y: 300,
-      px: 300,
-      py: 300,
-      color: 'FFF',
-      strokeWidth: 9001,
-    } // emit board-erasing datum to all players
+    // describe then emit board-erasing datum to all players from drawer client
+    const datum = { x: 300, y: 300, px: 300, py: 300, color: 'FFF', strokeWidth: 9001 }
     socket.emit('mouse', datum)
   }, roundLength * 333) // makes it 1/3rd time for dev purposes
 }
@@ -126,24 +127,22 @@ const pageRender = () => {
   }
 
   // hide/unhide the vote form, board controls and start round button for drawing/scoring players
-  if (currentUser.session_id === drawingPlayer.session_id) {
-    // current user is drawing player...
-    // hide score form
-    scoreFormEl.classList.add('hidden')
-    // show board controls
-    boardControlsEl.classList.remove('hidden')
-    // show start round button only if round hasn't started yet
-    if (!drawStarted) {
-      startRoundButtonEl.classList.remove('hidden')
+  if (currentUser && drawingPlayer) {
+    if (currentUser.session_id === drawingPlayer.session_id) {
+      // current user is drawing player...
+      // hide score form, show controls and start round button
+      scoreFormEl.classList.add('hidden')
+      boardControlsEl.classList.remove('hidden')
+      if (!drawStarted) {
+        startRoundButtonEl.classList.remove('hidden')
+      }
+    } else {
+      // current user is not drawing player...
+      // show score form, hide board controls and round button
+      scoreFormEl.classList.remove('hidden')
+      boardControlsEl.classList.add('hidden')
+      startRoundButtonEl.classList.add('hidden')
     }
-  } else {
-    // current user is not drawing player...
-    // show score form
-    scoreFormEl.classList.remove('hidden')
-    // hide board controls
-    boardControlsEl.classList.add('hidden')
-    // hide start round button
-    startRoundButtonEl.classList.add('hidden')
   }
 }
 
@@ -155,7 +154,6 @@ const scoreUpdateDB = async (user_id, score) => {
     body: JSON.stringify({ "score": score }),
     headers: { 'Content-Type': 'application/json'}
   })
-  console.log(response)
   if (response.ok) {
     return response
   } else {
@@ -170,7 +168,6 @@ const drawingUpdateDB = async (user_id, drawing) => {
     body: JSON.stringify({ "drawing": drawing }),
     headers: { 'Content-Type': 'application/json' }
   })
-  console.log(response)
   if (response.ok) {
     return response
   } else {
@@ -185,7 +182,6 @@ const gameUpdateDB = async (game_id, complete, started) => {
     body: JSON.stringify({ "complete": complete, "started": started }),
     headers: { 'Content-Type': 'application/json' }
   })
-  console.log(response)
   if (response.ok) {
     return response
   } else {
@@ -193,14 +189,13 @@ const gameUpdateDB = async (game_id, complete, started) => {
   }
 }
 
-// put fetch to update round completion, 2 ints and a boolean
+// put fetch to update round completion, 2 ints and 2 booleans
 const roundUpdateDB = async (game_id, round_number, complete, player_done) => {
   const response = await fetch(`/api/game/${game_id}/round/${round_number}`, {
     method: 'PUT',
     body: JSON.stringify({ "complete": complete, "player_done": player_done }),
     headers: { 'Content-Type': 'application/json' }
   })
-  console.log(response)
   if (response.ok) {
     return response
   } else {
@@ -280,11 +275,14 @@ function setup() {
 function mouseDragged() {
 	stroke(color)
 	strokeWeight(strokeWidth)
-  // authorize user to draw according to the session id of drawing player
-  if (currentUser.session_id === drawingPlayer.session_id && drawStarted) {
-	  line(mouseX, mouseY, pmouseX, pmouseY)
-    // Send the mouse coordinates
-    sendmouse(mouseX, mouseY, pmouseX, pmouseY)
+  // check for a drawing player and current user
+  if (currentUser && drawingPlayer){
+    // authorize user to draw according to the session id of drawing player
+    if (currentUser.session_id === drawingPlayer.session_id && drawStarted) {
+      line(mouseX, mouseY, pmouseX, pmouseY)
+      // Send the mouse coordinates
+      sendmouse(mouseX, mouseY, pmouseX, pmouseY)
+    }
   }
 }
 
