@@ -120,10 +120,12 @@ const playerDrawTimer = () => {
 // update page elements
 const pageRender = () => {
   // if game is complete, redirect to score page...
-  if (dbGameDataObj.complete || !dbGameDataObj) {
-    // console.log(window.location.pathname)
-    // window.locaton.pathname(`/game/${gameRoom}/score`)
-    return
+  if (!dbGameDataObj) {
+    // returns to homepage before rendering anything
+    return window.location = `/`
+  } else if (dbGameDataObj.complete) {
+    // returns to score screen, needs new route for rendering
+    return window.location = `/game/${gameRoom}/score`
   }
 
   // update drawing player name
