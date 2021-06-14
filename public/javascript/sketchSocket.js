@@ -82,13 +82,15 @@ const playerDrawTimer = () => {
     const drawOn = await drawingUpdateDB(scoringPlayers[0].id, 1)
     drawStarted = false
     cv.background(255, 255, 255)
-    const data = {
+    const datum = {
       x: 300,
       y: 300,
-      color: '#FFF',
+      px: 300,
+      py: 300,
+      color: 'FFF',
       strokeWidth: 9001,
-    } // emit board-erasing event to all players
-    socket.emit('mouse', data)
+    } // emit board-erasing datum to all players
+    socket.emit('mouse', datum)
   }, roundLength * 333) // makes it 1/3rd time for dev purposes
 }
 

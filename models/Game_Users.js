@@ -2,6 +2,8 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 const Users = require('./Users');
 const Game = require('./Game');
+const Round = require('./Round')
+
 
 // create our Users model
 class Game_Users extends Model { }
@@ -20,6 +22,28 @@ Game_Users.init(
     // keys for game and user are added in the models index
   },
   {
+    hooks: {
+      async afterCreate(addPlayerData) {
+        const { gameId, userId } = addPlayerData
+        // get rounds data
+        const rounds = await Round.findAll({ where: { game_id: gameId } })
+        // map round data to an array of rounds by id
+        const roundArray = rounds.map((round) => round.dataValues.id)
+        // for each round, push new player to the JSON array
+        roundArray.forEach(async (round) => {
+          const roundData = await Round.findOne({ where: { id: round } })
+          const drawerList = roundData.dataValues.left_to_draw.drawers
+          // add new player's user ID to the array
+          drawerList.push(userId)
+          const updateRoundDrawList = await Round.update(
+            { left_to_draw: { drawers: drawerList } }, 
+            { where: { id: round } })
+          console.log(updateRoundDrawList)
+        })
+        // push to an array in left_to_draw
+        // await Round.update({ where: { game_id: gameId } })
+      }
+    },
     sequelize,
     timestamps: false,
     freezeTableName: true,
