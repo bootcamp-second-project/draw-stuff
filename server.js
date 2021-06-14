@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
-const handlebars = require('express-handlebars');
+const exphbs = require('express-handlebars');
+const hbs = exphbs.create({});
 const sequelize = require('./config/connection');
 const routes = require('./controllers/');
 const PORT = process.env.PORT || 3001;
@@ -27,18 +28,10 @@ const sess = {
 };
 
 // set up handlebars as the views engine
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
-// config handlebars to recognize the views folder and other paths
-app.engine('handlebars', handlebars({
-  layoutsDir: __dirname + '/views/layouts',
-}));
-
-// set up the body of the page and serve it to index.handlebars
-app.get('/', (req, res) => {
-  res.render('main', { layout: 'index' });
-});
-
+// use sessions
 app.use(session(sess));
 
 // middleware for JSON and things
@@ -51,10 +44,7 @@ io.of("/").adapter.on("join-room", (room, id) => {
   // console.log(`socket ${id} has joined room ${room}`);
 });
 
-// play game page will render at whatever id
-app.get('/play/:id', (req, res) => {
-  res.sendFile(path.join(__dirname + '/public/play.html'));
-})
+
 
 io.on('connection', (socket) => {
   // console.log('Client connected on socket: ' + socket.id)
