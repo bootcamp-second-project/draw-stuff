@@ -1,25 +1,32 @@
 const url = window.location.href.split('/')
 const gameRoom = url[url.length - 1]
+let scored
+let drawStarted
 let drawingPlayer
 let scoringPlayers
-let remainingRounds
-let currentUser = JSON.parse(sessionStorage.getItem('user'))
-console.log(currentUser)
+let currentRound
+let roundLength
+let currentUser = JSON.parse(sessionStorage.getItem('user')) || { "session_id": "hehe" }
 
 // grab relevant elements here...
 const drawWordEl = document.getElementById('draw-word')
 const drawerAvatarEl = document.getElementById('drawer-avatar')
 const drawerUsernameEl = document.getElementById('drawer-username')
 const scoringPlayersContainer = document.getElementById('scoring-players')
-const scoreForm = document.getElementById('score-form')
+const scoreFormEl = document.getElementById('score-form')
+const submitButtonEl = document.getElementById('submit-score')
+const scoreSelectEl = document.getElementById('score')
+const boardControlsEl = document.getElementById('drawing-controls-section')
+const startRoundButtonEl = document.getElementById('start-draw-btn')
+console.log(boardControlsEl)
 
+// async fetch to grab data from database
 const gameData = async (gameId) => {
   // fetch for grabbing game data, includes player and round datas
   const dbGameData = await fetch(`/api/game/${gameId}`,{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   }).then(res => res.json())
-
   // map players to a new array
   players = dbGameData.users.map((player) => {
     const playerData = {
@@ -28,19 +35,24 @@ const gameData = async (gameId) => {
       score: player.game_users.score,
       drawing: player.game_users.drawing,
       session_id: player.session_id,
+      game_id: dbGameData.id
     }
     return playerData
   })
   // update drawingPlayer and scoringPlayers with current list from players
-  drawingPlayer = players.filter((player) => player.drawing === true).shift()
-  scoringPlayers = players.filter((player) => player.drawing === false)
-  
+  drawingPlayers = players.filter((player) => player.drawing === true)
+  drawingPlayer = drawingPlayers.shift() // returns first entry from list
+  scoringPlayers = players
+    .filter((player) => player.drawing === false)
+    .sort((a, b) => (a.id < b.id ? -1 : 1))
+  // set round length
+  roundLength = dbGameData.round_time
   // update round data, sorted by round number, filter for uncompleted rnds
-  remainingRounds = dbGameData.game_rounds
+  currentRound = dbGameData.game_rounds
     .sort((a, b) => (a.round_number < b.round_number ? -1 : 1))
     .filter((r) => r.complete === false)
+    .shift()
 }
-
 
 // timers to allow each user to draw consecutively...?
   // timer for drawing would have to initiate on drawer's client
@@ -49,12 +61,36 @@ const gameData = async (gameId) => {
   // after the timer ends, update the drawer to draw false
   // and update the next player to draw true
 
-const dataUpdateTimer = setInterval(async () => {
-  // timer to run gameData keeps local variables updated with db
-  await gameData(gameRoom)
-  pageRender()
-},1000) // runs every 1000 milliseconds
+// interval timer for data fetching continuously
+const gameDataUpdater = () => {
+  setInterval(async () => {
+    // keeps local variables updated with db
+    await gameData(gameRoom)
+    pageRender()
+  },1000) // runs every 1000 milliseconds
+}
+gameDataUpdater()
 
+const roundTimer = () => {
+  roundUpdateDB(gameRoom, currentRound.round_number, 1)
+}
+
+const playerDrawTimer = () => {
+  const timer = setTimeout(async () => {
+    // waits and then updates currently drawing player
+    const drawOff = await drawingUpdateDB(drawingPlayer.id, 0)
+    const drawOn = await drawingUpdateDB(scoringPlayers[0].id, 1)
+    drawStarted = false
+    cv.background(255, 255, 255)
+    const data = {
+      x: 300,
+      y: 300,
+      color: '#FFF',
+      strokeWidth: 9001,
+    } // emit board-erasing event to all players
+    socket.emit('mouse', data)
+  }, roundLength * 333) // makes it 1/3rd time for dev purposes
+}
 
 // update page elements
 const pageRender = () => {
@@ -67,19 +103,46 @@ const pageRender = () => {
     return (
 `<div id="scoring-player" class="m-2 flex flex-grow ring-2 items-center text-xl rounded-sm">
   <div id='scorer-avatar' class='avatar m-2 w-8 h-8 bg-blue-300'></div>
-  <div id='scorer-username' class="flex-grow text-center text-xl self-center">${player.username}</div>
+  <div id='scorer-username' class="flex-grow text-center text-xl self-center">
+    ${player.username}
+  </div>
   |
-  <div id='scorer-score' class="flex-grow text-center text-xl self-center">${player.score}</div>
+  <div id='scorer-score' class="flex-grow text-center text-xl self-center">
+    ${player.score}
+  </div>
 </div>`
     )
   }).join("") // join removes commas, returns string
   // update the HTML to show scoring players
   scoringPlayersContainer.innerHTML = scoringPlayerCards
-  // draw word element
-  drawWordEl.textContent = remainingRounds[0].phrase
 
-  // hide/unhide the vote form for drawing/scoring players
+  // draw word element update
+  if (currentRound !== undefined) {
+    drawWordEl.textContent = currentRound.phrase
+  } else {
+    drawWordEl.textContent = 'no more rounds!!'
+  }
 
+  // hide/unhide the vote form, board controls and start round button for drawing/scoring players
+  if (currentUser.session_id === drawingPlayer.session_id) {
+    // current user is drawing player...
+    // hide score form
+    scoreFormEl.classList.add('hidden')
+    // show board controls
+    boardControlsEl.classList.remove('hidden')
+    // show start round button only if round hasn't started yet
+    if (!drawStarted) {
+      startRoundButtonEl.classList.remove('hidden')
+    }
+  } else {
+    // current user is not drawing player...
+    // show score form
+    scoreFormEl.classList.remove('hidden')
+    // hide board controls
+    boardControlsEl.classList.add('hidden')
+    // hide start round button
+    startRoundButtonEl.classList.add('hidden')
+  }
 }
 
 // put fetch function to update user scores as the game is played
@@ -143,6 +206,22 @@ const roundUpdateDB = async (game_id, round_number, complete) => {
   }
 }
 
+// button handler for scoring on drawing player
+submitButtonEl.addEventListener('click', (e) => {
+  e.preventDefault()
+  const { id } = drawingPlayer
+  const score = scoreSelectEl.value.trim
+  scored ? console.log('already scored!!') : scoreUpdateDB(id, score)
+  scored = true
+})
+
+startRoundButtonEl.addEventListener('click', (e) => {
+  e.preventDefault()
+  playerDrawTimer()
+  // hide the button
+  startRoundButtonEl.classList.add('hidden')
+  drawStarted = true
+})
 
 // all things related to the canvas, socket and drawing after this line
 let socket
@@ -200,7 +279,7 @@ function mouseDragged() {
 	stroke(color)
 	strokeWeight(strokeWidth)
   // authorize user to draw according to the session id of drawing player
-  if (currentUser.session_id === drawingPlayer.session_id) {
+  if (currentUser.session_id === drawingPlayer.session_id && drawStarted) {
 	  line(mouseX, mouseY, pmouseX, pmouseY)
     // Send the mouse coordinates
     sendmouse(mouseX, mouseY, pmouseX, pmouseY)
