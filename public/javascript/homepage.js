@@ -78,7 +78,7 @@ let playFunction = async () => {
     const drawList = document.getElementById(`drawList`).value;
     console.log(drawList);
     await createGame(numRounds, roundTime);
-    window.location.href = `${defaultUrl}/play/${gameId}`;
+    window.location.href = `/play/${gameId}`;
 };
 // addEventListener(event, function);
 dropdown.addEventListener("change", async (event) => {
@@ -91,7 +91,7 @@ dropdown.addEventListener("change", async (event) => {
             const roundTime = document.getElementById(`roundTime`).value;
             const drawList = document.getElementById(`drawList`).value.split(new RegExp(",\\s*"));
             await createGame(numRounds, roundTime, drawList);
-            window.location.href = `${defaultUrl}/play/${gameId}`;
+            window.location.href = `/play/${gameId}`;
         };
         document.getElementById("playButton").textContent = "Create Game";
 
@@ -102,7 +102,7 @@ dropdown.addEventListener("change", async (event) => {
             const usernameText = document.getElementById(`usernameInput`).value;
             const newUser = await createUser(0, usernameText);
             await addUserToGame(gameId, newUser.id);
-            window.location.href = `${defaultUrl}/play/${gameId}`;
+            window.location.href = `/play/${gameId}`;
         }
         document.getElementById("playButton").textContent = "Play";
 
@@ -115,7 +115,7 @@ dropdown.addEventListener("change", async (event) => {
             const usernameText = document.getElementById(`usernameInput`).value;
             const newUser = await createUser(0, usernameText);
             await addUserToGame(gameId, newUser.id);
-            window.location.href = `${defaultUrl}/play/${gameId}`;
+            window.location.href = `/play/${gameId}`;
         }
         document.getElementById("playButton").textContent = "Play";
     }
