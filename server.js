@@ -38,7 +38,7 @@ app.use(session(sess));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // takes all static content and serves as assets
-app.use(express.static(path.join(__dirname, './public')));
+app.use(express.static(path.join(__dirname, './public')))
 
 io.of("/").adapter.on("join-room", (room, id) => {
   // console.log(`socket ${id} has joined room ${room}`);
@@ -57,9 +57,15 @@ io.on('connection', (socket) => {
       socket.to(id).emit('draw', data)
     });
   });
-
-
   socket.on('disconnect', () => console.log('Client has disconnected'))
+})
+
+// p5 board init breaks with handlebars
+app.use(express.static(path.join(__dirname, './src')));
+// play game page will render at whatever id
+app.get('/play/:id', (req, res) => {
+  // this view is not generated with handlebars!!
+  res.sendFile(path.join(__dirname + '/src/play.html'))
 })
 
 // turn on routing from the controllers index
