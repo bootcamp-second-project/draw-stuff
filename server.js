@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3001;
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const secret = process.env.SECRET;
+const cors = require('cors');
 
 const app = express();
 // add websocket connection
@@ -25,6 +26,24 @@ const sess = {
 };
 
 app.use(session(sess));
+
+//cors
+// const allowedOrigins = ['http://localhost:3001', 'www.example.com'];
+app.use(
+  cors()
+  // cors({
+  //   origin: function (origin, callback) {
+  //     if (!origin) {
+  //       return callback(null, true);
+  //     }
+  //     if (allowedOrigins.indexOf(origin) === -1) {
+  //       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+  //       return callback(new Error(msg), false);
+  //     }
+  //     return callback(null, true);
+  //   }
+  // })
+);
 
 // middleware for JSON and things
 app.use(express.json());
@@ -52,8 +71,8 @@ io.on('connection', (socket) => {
       socket.to(id).emit('draw', data)
     });
   });
-  
-  
+
+
   socket.on('disconnect', () => console.log('Client has disconnected'))
 })
 
@@ -61,6 +80,6 @@ io.on('connection', (socket) => {
 app.use(routes);
 
 
-sequelize.sync({ force: false }).then(() => {
-  server.listen(PORT, () => {console.log('sequelize now listening.')});
+sequelize.sync({ force: true }).then(() => {
+  server.listen(PORT, () => { console.log('sequelize now listening.') });
 })

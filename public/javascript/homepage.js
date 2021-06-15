@@ -70,6 +70,7 @@ async function getAllGameIds(url = defaultUrl) {
 // need some button handling that considers the selected dropdown value
 
 let gameId;
+let playFunction = () => { };
 
 const dropdown = document.getElementById("gameOption");
 
@@ -79,19 +80,31 @@ dropdown.addEventListener("change", async (event) => {
     const selectedDropdown = event.target.value;
     if (selectedDropdown === "create") {
         // disable play button
+        playFunction = () => {};
         // ask for rounds, round time, and draw list
+        
+        
+        
         // create a "create game" button 
     } else if (selectedDropdown === "join") {
-
-        // ask for game id
+        
     } else if (selectedDropdown === "random") {
         // grab a random game id from server
         const gameIds = await getAllGameIds();
         const randomIndex = Math.floor(Math.random() * gameIds.length);
         gameId = gameIds[randomIndex];
-        console.log(gameId);
+        playFunction = async () => {
+            const usernameText = document.getElementById(`usernameInput`).value;
+            const newUser = await createUser(0, usernameText);
+            await addUserToGame(gameId, newUser.id);
+            window.location.href = `${defaultUrl}/play/${gameId}`;
+        }
     }
 });
+
+document.getElementById("playButton").onclick = async () => {
+    playFunction();
+}
 
 // disable the play button while creating a game is selected
 
