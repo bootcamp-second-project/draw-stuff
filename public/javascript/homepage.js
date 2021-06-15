@@ -23,13 +23,13 @@ async function createUser(avatar, username, url = defaultUrl) {
 
 
 // fetch function to create a new game in the database
-async function createGame(rounds, roundTime, url = defaultUrl) {
+async function createGame(rounds, roundTime, drawList, url = defaultUrl) {
     const response = await fetch(`${url}/api/game`, {
         method: "POST",
         body: JSON.stringify({
             rounds, //this is a shortcut for `rounds: rounds`
             round_time: roundTime,
-            draw_list: "",
+            draw_list: drawList,
         }),
         headers: {
             'Content-Type': 'application/json'
@@ -88,9 +88,8 @@ dropdown.addEventListener("change", async (event) => {
         playFunction = async () => {
             const numRounds = document.getElementById(`numRound`).value;
             const roundTime = document.getElementById(`roundTime`).value;
-            const drawList = document.getElementById(`drawList`).value;
-            console.log(drawList);
-            await createGame(numRounds, roundTime);
+            const drawList = document.getElementById(`drawList`).value.split(new RegExp(",\\s*"));
+            await createGame(numRounds, roundTime, drawList);
             window.location.href = `${defaultUrl}/play/${gameId}`;
         };
         document.getElementById("playButton").textContent = "Create Game";
