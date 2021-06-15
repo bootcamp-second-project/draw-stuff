@@ -70,24 +70,42 @@ async function getAllGameIds(url = defaultUrl) {
 // need some button handling that considers the selected dropdown value
 
 let gameId;
-let playFunction = () => { };
-
 const dropdown = document.getElementById("gameOption");
-
+let playFunction = async () => {
+    const numRounds = document.getElementById(`numRound`).value;
+    const roundTime = document.getElementById(`roundTime`).value;
+    const drawList = document.getElementById(`drawList`).value;
+    console.log(drawList);
+    await createGame(numRounds, roundTime);
+    window.location.href = `${defaultUrl}/play/${gameId}`;
+};
 // addEventListener(event, function);
 dropdown.addEventListener("change", async (event) => {
     // create | join | random
     const selectedDropdown = event.target.value;
     if (selectedDropdown === "create") {
-        // disable play button
-        playFunction = () => {};
         // ask for rounds, round time, and draw list
-        
-        
-        
-        // create a "create game" button 
+        playFunction = async () => {
+            const numRounds = document.getElementById(`numRound`).value;
+            const roundTime = document.getElementById(`roundTime`).value;
+            const drawList = document.getElementById(`drawList`).value;
+            console.log(drawList);
+            await createGame(numRounds, roundTime);
+            window.location.href = `${defaultUrl}/play/${gameId}`;
+        };
+        document.getElementById("playButton").textContent = "Create Game";
+
     } else if (selectedDropdown === "join") {
-        
+        // i think we need to grab a game by its id from the input
+        playFunction = async () => {
+            const gameId = document.getElementById(`gameNumber`).value;
+            const usernameText = document.getElementById(`usernameInput`).value;
+            const newUser = await createUser(0, usernameText);
+            await addUserToGame(gameId, newUser.id);
+            window.location.href = `${defaultUrl}/play/${gameId}`;
+        }
+        document.getElementById("playButton").textContent = "Play";
+
     } else if (selectedDropdown === "random") {
         // grab a random game id from server
         const gameIds = await getAllGameIds();
@@ -99,6 +117,7 @@ dropdown.addEventListener("change", async (event) => {
             await addUserToGame(gameId, newUser.id);
             window.location.href = `${defaultUrl}/play/${gameId}`;
         }
+        document.getElementById("playButton").textContent = "Play";
     }
 });
 
