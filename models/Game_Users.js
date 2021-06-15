@@ -11,6 +11,12 @@ class Game_Users extends Model { }
 // define table columns and configuration
 Game_Users.init(
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
     score: {
       type: DataTypes.INTEGER,
       defaultValue: 0
@@ -37,7 +43,7 @@ Game_Users.init(
           drawerList.push(userId)
           const sortDrawerList = drawerList.sort((a, b) => (a < b ? -1 : 1))
           const updateRoundDrawList = await Round.update(
-            { left_to_draw: { "drawers": sortDrawerList } }, 
+            { left_to_draw: { "drawers": sortDrawerList } },
             { where: { id: round } }
           )
         })
