@@ -11,7 +11,7 @@ router.get('/play/:id', (req, res) => {
 
 // rendering for score pages will happen at /game/1/score
 router.get('/game/:id/score', async (req, res) => {
-  // res.render('score', datas)
+  res.render('score')
 })
 
 module.exports = router
