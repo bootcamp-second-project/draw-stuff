@@ -25,7 +25,7 @@ async function createUser(avatar, username, url = defaultUrl) {
 
 // fetch function to create a new game in the database
 async function createGame(rounds, roundTime, drawList, url = defaultUrl) {
-    const response = await fetch(`${url}/api/game`, {
+    const response = await fetch(`/api/game`, {
         method: "POST",
         body: JSON.stringify({
             rounds, //this is a shortcut for `rounds: rounds`
