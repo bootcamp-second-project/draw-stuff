@@ -115,5 +115,3 @@ document.getElementById("playButton").onclick = async () => {
 /**
     TEST CODE
 */
-
-createUser(1, "hello");
