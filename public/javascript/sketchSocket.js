@@ -78,7 +78,7 @@ let updateInterval = setInterval(async () => {
   // keeps local variables updated with db
   await gameData(gameRoom)
   pageRender()
-}, 200) // runs every 1000 milliseconds
+}, 3000) // runs every 3000 milliseconds
 
 const startGame = async () => {
   // update game to started and first player to drawing
