@@ -6,7 +6,7 @@ const defaultUrl = "http://localhost:3001";
 
 // fetch function to post a new user to the database
 async function createUser(avatar, username, url = defaultUrl) {
-    const response = await fetch(`${url}/api/users`, {
+    const response = await fetch(`/api/users`, {
         method: "POST",
         body: JSON.stringify({
             username: username,
@@ -17,6 +17,7 @@ async function createUser(avatar, username, url = defaultUrl) {
         }
     });
     const data = await response.json();
+    sessionStorage.setItem('user', JSON.stringify(data))
     return data;
 }
 
@@ -42,7 +43,7 @@ async function createGame(rounds, roundTime, drawList, url = defaultUrl) {
 // this one should eventually redirect to '/play/:id' passing in the game id
 // user will end up drawing in a room with the other players in the game
 async function addUserToGame(game_id, user_id, url = defaultUrl) {
-    const response = await fetch(`${url}/api/player`, {
+    const response = await fetch(`/api/player`, {
         method: "POST",
         body: JSON.stringify({
             game_id,
@@ -57,7 +58,7 @@ async function addUserToGame(game_id, user_id, url = defaultUrl) {
 }
 
 async function getAllGameIds(url = defaultUrl) {
-    const response = await fetch(`${url}/api/game`, {
+    const response = await fetch(`/api/game`, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json'
@@ -132,5 +133,3 @@ document.getElementById("playButton").onclick = async () => {
 /**
     TEST CODE
 */
-
-createUser(1, "hello");
