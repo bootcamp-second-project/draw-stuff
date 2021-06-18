@@ -1,5 +1,21 @@
-<div id="scoreboardContainer flex flex-col max-w-md px-20 py-20 bg-white rounded-lg shadow-2xl">
-  <div id="firstPlace" class="bg-yellow-400">Player 1 | 100</div>
-  <div id="secondPlace" class="bg-gray-300">Player 2 | 50</div>
-  <div id="thirdPlace" class="bg-yellow-600">Player 3 | 30</div>
+<div id="scoreboardContainer" 
+  class="flex-grow flex flex-col max-w-lg min-w-max px-5 py-4 bg-white rounded-lg shadow-2xl place-self-center">
+  
+  {{#each this}}
+  
+    {{#if this.username}}
+    <div id="scoring-player" class="a m-2 flex flex-grow ring-2 items-center text-xl rounded-sm">
+      <div id='scorer-avatar' class='avatar m-2 w-8 h-8 bg-blue-300'></div>
+      <div id='scorer-username' class="flex-grow text-center text-xl self-center text-black">
+        {{username}}
+      </div>
+      |
+      <div id='scorer-score' class="flex-grow text-center text-xl self-center">
+        {{score}}
+      </div>
+    </div>
+    {{/if}}
+
+  {{/each}}
+
 </div>

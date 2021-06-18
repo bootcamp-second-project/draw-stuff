@@ -11,12 +11,6 @@ class Game_Users extends Model { }
 // define table columns and configuration
 Game_Users.init(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
     score: {
       type: DataTypes.INTEGER,
       defaultValue: 0

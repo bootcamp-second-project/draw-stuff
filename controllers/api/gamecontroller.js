@@ -1,5 +1,23 @@
 const router = require('express').Router();
-const { Game, Users, Game_Users, Round } = require('../../models');
+const { Game, Users, Game_Users, Round } = require('../../models')
+
+
+router.get('/', async (req, res) => {
+  const games = await Game.findAll({
+    include: [
+    {
+      // get user data with game
+      model: Users,
+      through: [Game_Users],
+    },
+    {
+      // get round data with game
+      model: Round,
+      as: 'game_rounds'
+    }
+  ]});
+  res.status(200).send(games);
+});
 
 // at ~/api/game/rounds
 router.get('/rounds', async (req, res) => {
@@ -98,12 +116,6 @@ router.get('/:id', async (req, res) => {
     this returns all of the game ids
     body: none
 */
-router.get('/', async (req, res) => {
-  const games = await Game.findAll({
-    attributes: ['id']
-  });
-  res.status(200).send(games.map((game) => game.id));
-});
 
 /**
     A post request to /api/game
