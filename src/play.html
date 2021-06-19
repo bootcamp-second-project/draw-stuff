@@ -8,9 +8,9 @@
     <header class='absolute top-0 flex w-full items-center justify-center 
                    space-between border-b border-black opacity-70'
     >
-      <a href="/">home</a>
+      <a class='flex-grow p-6' href="/">home</a>
       <div class='m-4 text-3xl opacity-100'>DRAW WITH FRIENDS</div>
-      <a href="/">scores</a>
+      <a class='flex-grow p-6 text-right' href="/">scores</a>
     </header>
 
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
@@ -51,7 +51,7 @@
             <div id="drawing-player-card" class="m-2 flex ring-2 rounded-sm">
               <div id='drawer-avatar' class='m-2 w-16 h-16 bg-white'></div>
               <div id='drawer-username' class="flex-grow text-center text-2xl self-center">
-                player 1
+                drawing player
               </div>
             </div>
             <form id='score-form' class="hidden pickScore m-2 mt-0 self-center">

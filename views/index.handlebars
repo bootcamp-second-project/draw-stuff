@@ -1,44 +1,89 @@
-<div id="mainContainer"
-  class="flex flex-col items-center justify-center bg-gradient-to-b from-purple-200 via-blue-300 to-purple-400">
-  <div id="userContainer" class="max-w-md px-20 py-20 bg-white rounded-lg shadow-2xl">
-    <p>
-      Username:
+<div 
+  id="mainContainer"
+  class="flex flex-col items-center content-center bg-gradient-to-b"
+>
+  <section id="userContainer" class="max-w-md p-10 py-4 grid bg-white rounded-lg shadow-2xl">
+    <div class="flex items-center">
+      <span class="flex-grow mr-8 ">username:</span> 
       <input id="usernameInput" type="username"
-        class="ring-2 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 my-5 shadow-lg focus:rounded-sm rounded-sm"></input>
-    </p>
-    <div class="userAvatar w-auto flex justify-center">
-      <img src="./avatarsample.png">
+        class="ring-2 px-1 focus:outline-none focus:ring-4 my-4 
+          focus:ring-purple-300 ring-purple-100 focus:rounded rounded-sm
+          text-right"
+        placeholder='username'
+      >
+      </input>
     </div>
 
-    <label for="gameOption">Game Option:</label>
-    <select name="gameOption" id="gameOption">
-      <option value="random">Join a Random Game</option>
-      <option value="join">Join a Friend's Game</option>
-      <option value="create">Create a Game</option>
-    </select>
-
-    <div id="gameNumber">
-      Game Number:
-      <input class="ring-2 w-8 m-5 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
-        type="text" id="gameNumber" />
+    <div class="flex items-center">
+      <label for="gameOption" class='flex-grow'>game:</label>
+      <select name="gameOption" 
+        id="gameOption"
+        class="ring-2 px-1 focus:outline-none focus:ring-4 my-4 
+          focus:ring-purple-300 ring-purple-100 focus:rounded rounded-sm
+          text-right"
+      >
+        <option value="random">join a random game</option>
+        <option value="join">join a friend's game</option>
+        <option value="create">create a game</option>
+      </select>
     </div>
 
-    <button></button>
-    <div id="playButton" class="bg-blue-200 hover:bg-blue-300 rounded-lg flex justify-center px-2 py-2 my-5">
-      Play!</div></button>
-  </div>
+    <div id="join-game-option" class="hidden flex w-full items-center transition-opacity">
+      <span class="flex-grow">game number:</span> 
+      <input 
+        class=" ring-2 w-8 px-1 my-4 focus:outline-none focus:ring-4 ring-purple-100
+          focus:ring-purple-300 rounded-sm text-right "
+        placeholder='7'
+        type="text"
+        id="gameNumber"
+      />
+    </div>
 
-  <div id="roundOptions" class="flex flex-col max-w-md px-20 m-5 py-10 bg-white rounded-lg shadow-2xl">
-    <div id="numRound">rounds: <input
-        class="ring-2 w-8 m-2 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
-        type="text" placeholder="2" id="roundNumber" /></div>
-    <div id="roundTime">round time: <input
-        class="ring-2 w-8 m-2 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
-        type="text" placeholder="1" id="roundTime" /></div>
-    <div id="drawList">draw list: <input
-        class="ring-2 w-30 max-w-md m-5 focus:outline-none content focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
-        type="text" placeholder="words" id="drawList" /></div>
-  </div>
+    <div class="flex justify-center">
+      <button
+        id="playButton"
+        class="bg-blue-200 ring-2 hover:bg-blue-300 px-2 py-2 m-6 w-32 
+        rounded-lg shadow-md focus:outline-none"
+      >
+        Play!
+      </button>
+    </div>
+  </section>
+
+  <section 
+    id="create-game-options" 
+    class="hidden flex flex-col max-w-md m-5 p-10 py-6 
+      bg-white rounded-lg shadow-2xl"
+  >
+    <div id="numRound" class="flex items-center">
+      <span class="flex-grow">rounds: </span>
+      <input
+        class="ring-2 w-8 px-1 m-2 focus:outline-none focus:ring-4 text-right
+         focus:ring-purple-300 ring-purple-100 rounded-sm "
+        type="text" placeholder="3" id="roundNumber"
+      />
+    </div>
+    <div id="roundTime" class="flex items-center">
+      <span class="flex-grow">round length:</span>
+      <input
+        class="ring-2 w-8 px-1 m-2 focus:outline-none focus:ring-4 text-right
+         focus:ring-purple-300 ring-purple-100 rounded-sm"
+        type="text" placeholder="30" id="roundTime"
+      />
+    </div>
+    <div id="drawList" class="flex py-2">
+      <label for='drawList' class="flex-grow w-24">draw list: </label>
+      <textarea
+        class="ring-2 w-40 h-40 max-w-md m-2 focus:outline-none content
+          px-1 focus:ring-4 focus:ring-purple-300 ring-purple-100 rounded-sm
+          "
+        type="text"
+        placeholder="words separated by spaces" 
+        id="drawList"
+        name='drawList'
+      ></textarea>
+    </div>
+  </section>
 
 </div>
 
