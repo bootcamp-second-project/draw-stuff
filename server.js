@@ -10,6 +10,7 @@ const { response } = require("express");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const secret = process.env.SECRET;
 const cors = require("cors");
+const { Game, Users, Round, Game_Users } = require("./models");
 
 const app = express();
 // add websocket connection
@@ -69,7 +70,18 @@ io.on("connection", (socket) => {
   socket.on("join", (id, user) => {
     socket.join(id);
     console.log("now playing in room: " + id);
-    socket.to(id).emit("user-connected", user);
+
+    // have User join game
+    Game_Users.create({
+      userId: user.dataValues.id,
+      gameId: id,
+    }).then((gameUser) => {
+      // broadcast the user has joined to any other clients
+      fetchGame(id).then((game) => {
+        io.emit("game-data", game);
+      });
+    });
+
     // socket gets draw datas to emit to other clients
     socket.on("mouse", (data) => {
       socket.to(id).emit("draw", data);
@@ -78,6 +90,24 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => console.log("Client has disconnected"));
 });
+
+const fetchGame = async (gameID) => {
+  return await Game.findOne({
+    where: {
+      id: gameID,
+    },
+    include: [
+      {
+        model: Users,
+        through: [Game_Users],
+      },
+      {
+        model: Round,
+        as: "game_rounds",
+      },
+    ],
+  });
+};
 
 // p5 board init breaks with handlebars
 app.use(express.static(path.join(__dirname, "./src")));

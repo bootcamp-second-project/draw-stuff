@@ -42,6 +42,11 @@ const gameData = async (gameId) => {
     console.log(response.status, response.statusText, "interval stopped!");
     return;
   }
+
+  mapPlayerData();
+};
+
+const mapPlayerData = () => {
   // map players to a new array
   players = dbGameDataObj.users.map((player) => {
     const playerData = {
@@ -73,14 +78,6 @@ const gameData = async (gameId) => {
     ? gameUpdateDB(gameRoom, 1, 1) // none left update game as complete
     : (leftToDraw = currentRound.left_to_draw.drawers);
 };
-
-// interval timer for data fetching continuously
-
-let updateInterval = setInterval(async () => {
-  // keeps local variables updated with db
-  //await gameData(gameRoom);
-  //pageRender();
-}, 3000); // runs every 3000 milliseconds
 
 const startGame = async () => {
   // update game to started and first player to drawing
@@ -198,7 +195,6 @@ const pageRender = () => {
 
 const scoringPlayerList = (scoringPlayers) => {
   // scoring players list update
-  console.log(scoringPlayers);
   const scoringPlayerCards = scoringPlayers
     .map((player) => {
       return `<div id="scoring-player" class="m-2 flex flex-grow ring-2 items-center text-xl rounded-sm">
@@ -314,9 +310,10 @@ function setup() {
     socket.emit("join", gameRoom, currentUser);
   });
 
-  socket.on("user-connected", (user) => {
-    scoringPlayers.push(user);
-    scoringPlayerList(scoringPlayers);
+  socket.on("game-data", (gameData) => {
+    dbGameDataObj = gameData;
+    mapPlayerData();
+    pageRender();
   });
 
   // Callback function
