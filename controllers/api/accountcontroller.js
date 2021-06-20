@@ -1,4 +1,3 @@
-const router = require("express").Router();
 const { Game, Users, Game_Users, Round } = require("../../models");
 // The `/api/account` endpoint
 
