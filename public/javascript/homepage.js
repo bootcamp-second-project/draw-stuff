@@ -1,5 +1,5 @@
 // select all relavant elements up here
-const usernameEl = document.getElementById(`usernameInput`);
+const usernameEl = document.getElementById(`username`);
 const playButtonEl = document.getElementById("playButton");
 const joinGameNumberEl = document.getElementById("gameNumber");
 const createNumRounds = document.getElementById(`roundNumber`);
@@ -8,6 +8,7 @@ const createDrawList = document.getElementById(`drawListInput`);
 const dropdown = document.getElementById("gameOption");
 const createGameOptionsModal = document.getElementById("create-game-options");
 const joinGameOptionModal = document.getElementById("join-game-option");
+const formErrors = document.getElementById("formErrors");
 
 // fetch function to post a new user to the database
 async function createUser(avatar, username) {
@@ -20,10 +21,34 @@ async function createUser(avatar, username) {
     headers: {
       "Content-Type": "application/json",
     },
-  });
-  const user = await response.json();
-  sessionStorage.setItem("user", JSON.stringify(user));
-  return user;
+  })
+    .then((resp) => resp.json())
+    .then((data) => {
+      if (data.success) {
+        const user = data;
+        sessionStorage.setItem("user", JSON.stringify(user));
+        return user;
+      } else {
+        handleErrors(data.errors);
+      }
+    })
+    .catch((err) => {
+      formErrors.innerHTML =
+        "There was an internal server error!!! Contact JAPANKID";
+    });
+
+  return response;
+}
+
+async function handleErrors(errors) {
+  formErrors.innerHTML = "";
+
+  for (const err of errors) {
+    formErrors.innerHTML += err.message;
+    document
+      .getElementById(err.field)
+      ?.classList?.add("border-2", "border-red-500");
+  }
 }
 
 // fetch function to create a new game in the database
@@ -79,6 +104,9 @@ let playFunction = async (type) => {
   const username = usernameEl.value;
   //const availableGames = await getAllGameIds();
   const user = await createUser(1, username);
+  if (user === undefined) {
+    return;
+  }
 
   const numRounds = createNumRounds.value;
   const roundTime = createRoundTime.value;
