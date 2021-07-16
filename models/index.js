@@ -2,6 +2,7 @@ const Game = require('./Game');
 const Users = require('./Users');
 const Game_Users = require('./Game_Users');
 
+// join tables
 Game.belongsToMany(Users, {
   through: Game_Users
 })

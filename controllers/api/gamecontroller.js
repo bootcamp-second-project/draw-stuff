@@ -1,4 +1,6 @@
+// import express for the router
 const router = require('express').Router();
+// import database models
 const { Game, Users, Game_Users } = require('../../models');
 
 /**
