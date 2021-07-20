@@ -1,0 +1,45 @@
+<div id="mainContainer"
+  class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-200 via-blue-300 to-purple-400">
+  <div id="userContainer" class="max-w-md px-20 py-20 bg-white rounded-lg shadow-2xl">
+    <p>
+      Username:
+      <input id="usernameInput" type="username"
+        class="ring-2 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 my-5 shadow-lg focus:rounded-sm rounded-sm"></input>
+    </p>
+    <div class="userAvatar w-auto flex justify-center">
+      <img src="./avatarsample.png">
+    </div>
+
+    <label for="gameOption">Game Option:</label>
+    <select name="gameOption" id="gameOption">
+      <option value="random">Join a Random Game</option>
+      <option value="join">Join a Friend's Game</option>
+      <option value="create">Create a Game</option>
+    </select>
+
+    <div id="gameNumber">
+      Game Number:
+      <input class="ring-2 w-8 m-5 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
+        type="text" id="gameNumber" />
+    </div>
+
+    <button></button>
+    <div id="playButton" class="bg-blue-200 hover:bg-blue-300 rounded-lg flex justify-center px-2 py-2 my-5">
+      Play!</div></button>
+  </div>
+
+  <div id="roundOptions" class="flex flex-col max-w-md px-20 m-5 py-10 bg-white rounded-lg shadow-2xl">
+    <div id="numRound">rounds: <input
+        class="ring-2 w-8 m-2 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
+        type="text" placeholder="2" id="roundNumber" /></div>
+    <div id="roundTime">round time: <input
+        class="ring-2 w-8 m-2 focus:outline-none focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
+        type="text" placeholder="1" id="roundTime" /></div>
+    <div id="drawList">draw list: <input
+        class="ring-2 w-30 max-w-md m-5 focus:outline-none content focus:ring-2 focus:ring-purple-300 ring-purple-100 rounded-md"
+        type="text" placeholder="words" id="drawList" /></div>
+  </div>
+
+</div>
+
+<script src='javascript/homepage.js'></script>
